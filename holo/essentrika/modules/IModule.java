@@ -10,7 +10,7 @@ public interface IModule
 {
 	public int getID();
 	
-	public void update(World world);
+	public void update(World world, int x, int y);
 	
 	public int getUpgradeCost(IModule upgrade);
 	

@@ -28,16 +28,19 @@ public class ModuleLand implements IModule, IPowerReciever
 	}
 
 	@Override
-	public void update(World world)
+	public void update(World world, int x, int y)
 	{
-		
+		if(isConnectedToPowerGrid(world, x, y))
+		{
+			
+		}
 	}
 
 	@Override
 	public int getUpgradeCost(IModule upgrade) 
 	{
 		int id = upgrade.getID();
-		return id == ModuleCreator.modulePlayerGeneratorID ? 500 : id == ModuleCreator.moduleWorldGeneratorID ? 1500 : 0;
+		return id == ModuleCreator.modulePlayerGeneratorID ? 500 : id == ModuleCreator.moduleWorldGeneratorID ? 1500: id == ModuleCreator.moduleConduitID ? 50 : 0;
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package holo.essentrika.modules;
 
 import holo.essentrika.map.World;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.newdawn.slick.Image;
@@ -22,7 +23,7 @@ public class ModuleStrongPlayerGenerator implements IModule
 	}
 
 	@Override
-	public void update(World world)
+	public void update(World world, int x, int y)
 	{
 		
 	}
@@ -30,13 +31,17 @@ public class ModuleStrongPlayerGenerator implements IModule
 	@Override
 	public int getUpgradeCost(IModule upgrade)
 	{
-		return 0;
+		int id = upgrade.getID();
+		return id == ModuleCreator.moduleLandID ? -1200: id == ModuleCreator.modulePlayerGeneratorID ? -800 : 0;
 	}
 
 	@Override
 	public List<Integer> getUpgrades()
 	{
-		return null;
+		List<Integer> modules = new ArrayList<Integer>();
+		modules.add(ModuleCreator.moduleLandID);
+		modules.add(ModuleCreator.modulePlayerGeneratorID);
+		return modules;
 	}
 
 	@Override

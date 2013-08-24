@@ -78,12 +78,12 @@ public class World
 		int id = fastfloor(Math.abs(SimplexNoise.noise(x, y) * 15));
 		if (id <= 0)
 			id = 0;
-		else if(id < 10)
-			id = 0;
-		else if(id < 13)
-			id = 1;
+		else if(id < 8)
+			id = ModuleCreator.moduleLandID;
+		else if(id < 9)
+			id = ModuleCreator.moduleWorldGeneratorID;
 		else
-			id = 2;
+			id = ModuleCreator.moduleWaterID;
 		return id;
 	}
 

@@ -1,26 +1,24 @@
 package holo.essentrika.modules;
 
-import holo.essentrika.grid.IGeneratorModule;
 import holo.essentrika.map.World;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
-public class ModuleWorldGenerator implements IModule, IGeneratorModule
+public class ModuleWater implements IModule
 {
 	Image sprite;
-	public ModuleWorldGenerator() throws SlickException
+	public ModuleWater() throws SlickException
 	{
-		sprite = new Image("res/WorldGenerator.png");
+		sprite = new Image("res/Water.png");
 	}
-	
+
 	@Override
 	public int getID()
 	{
-		return 2;
+		return ModuleCreator.moduleWaterID;
 	}
 
 	@Override
@@ -50,25 +48,7 @@ public class ModuleWorldGenerator implements IModule, IGeneratorModule
 	@Override
 	public String getModuleName()
 	{
-		return "Mysterious Generator";
-	}
-
-	@Override
-	public int powerGenerated()
-	{
-		return 15;
-	}
-
-	@Override
-	public int currentPower(World world, int x, int y)
-	{
-		return 0;
-	}
-
-	@Override
-	public ArrayList<IModule> getPoweredModules(World world, int x, int y)
-	{
-		return null;
+		return "Water";
 	}
 
 }

@@ -96,9 +96,10 @@ public class GameState extends BasicGameState
 			y = gc.getHeight() - gc.getHeight() / 9;
 			int textY = gc.getHeight() - gc.getHeight() / 9;
 			
-			FontUtils.drawLeft(font, selectedModule.getModuleName(), x, textY);
+			String title = selectedModule.getModuleName() + " (" + selectedModuleCoords[0] + "," + selectedModuleCoords[1] + ")";
+			FontUtils.drawLeft(font, title, x, textY);
 			
-			int textWidth = font.getWidth(selectedModule.getModuleName());
+			int textWidth = font.getWidth(title);
 			
 			if(selectedModule instanceof IGeneratorModule)
 			{

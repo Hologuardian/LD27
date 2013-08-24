@@ -24,7 +24,7 @@ public class ModulePlayerGenerator implements IModule, IGeneratorModule
 	}
 
 	@Override
-	public void update(World world)
+	public void update(World world, int x, int y)
 	{
 		
 	}
@@ -33,7 +33,7 @@ public class ModulePlayerGenerator implements IModule, IGeneratorModule
 	public int getUpgradeCost(IModule upgrade)
 	{
 		int id = upgrade.getID();
-		return id == ModuleCreator.moduleLandID ? -500: id == ModuleCreator.moduleStrongPlayerGeneratorID ? 1000 : 0;
+		return id == ModuleCreator.moduleLandID ? -400: id == ModuleCreator.moduleStrongPlayerGeneratorID ? 1000 : 0;
 	}
 
 	@Override
