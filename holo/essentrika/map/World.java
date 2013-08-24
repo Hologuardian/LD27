@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.Scanner;
 
+import org.newdawn.slick.SlickException;
+
 public class World 
 {
 	public HashMap<Long, IModule> modules;
@@ -52,7 +54,15 @@ public class World
 	{
 		int x = fastfloor(coord >> 24);
 		int y = fastfloor(coord - (x << 24)) - (1 << 24) / 2;
-		IModule module = ModuleCreator.createModule(getRandomModuleID(x, y));
+		IModule module = null;
+		try
+		{
+			module = ModuleCreator.createModule(getRandomModuleID(x, y));
+		} catch (SlickException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		modules.put(coord, module);
 	}
 
@@ -113,7 +123,7 @@ public class World
 			}
 			sc.close();
 		}
-		catch(IOException e)
+		catch(IOException | SlickException e)
 		{
 			e.printStackTrace();
 		}

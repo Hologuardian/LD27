@@ -22,10 +22,16 @@ public class GameState extends BasicGameState
 	private final int stateID;
 	StateBasedGame game;
 	
+	IModule selectedModule = null;
+	int[] selectedModuleCoords = new int[]{0, 0};
+	
 	GradientFill fill;
 	
 	public static World world;
 	int[] cameraCoords = new int[]{0, 0};
+	
+	int screenWidth;
+	int screenHeight;
 	
 	
 	public GameState(int stateID, StateBasedGame game, boolean load)
@@ -62,24 +68,30 @@ public class GameState extends BasicGameState
 				g.drawRect(x, y, 64, 64);
 				Shape box = new Rectangle(x, y, 64, 64);
 				Color col = Color.black;
-//				Image sprite = world.getModuleAt(i - moduleWidth / 2 + cameraCoords[0], j - moduleHeight / 2 + cameraCoords[1]).getIcon();
-//				g.drawImage(sprite, x, y);
-				switch(world.getModuleAt(i - moduleWidth / 2 + cameraCoords[0], j - moduleHeight / 2 + cameraCoords[1]).getID())
-				{
-				case 0:
-					col = Color.green;
-					break;
-				case 1:
-					col = Color.blue;
-					break;
-				case 2:
-					col = Color.orange;
-					break;
-				}
-				fill = new GradientFill(box.getX(), box.getY(), col, box.getX() + box.getWidth(), box.getY() + box.getHeight(), col);
-				g.fill(box, fill);
+				Image sprite = world.getModuleAt(i - moduleWidth / 2 + cameraCoords[0], j - moduleHeight / 2 + cameraCoords[1]).getIcon(world, i - moduleWidth / 2 + cameraCoords[0], j - moduleHeight / 2 + cameraCoords[1]);
+				g.drawImage(sprite, x, y);
+//				switch(world.getModuleAt(i - moduleWidth / 2 + cameraCoords[0], j - moduleHeight / 2 + cameraCoords[1]).getID())
+//				{
+//				case 0:
+//					col = Color.green;
+//					break;
+//				case 1:
+//					col = Color.blue;
+//					break;
+//				case 2:
+//					col = Color.orange;
+//					break;
+//				}
+//				fill = new GradientFill(box.getX(), box.getY(), col, box.getX() + box.getWidth(), box.getY() + box.getHeight(), col);
+//				g.fill(box, fill);
 				g.draw(box);
 			}
+		}
+		
+		if (selectedModule != null)
+		{
+			Image sprite = selectedModule.getIcon(world, selectedModuleCoords[0], selectedModuleCoords[1]);
+			g.drawImage(sprite, gc.getWidth() * 2 / 3, gc.getHeight() - gc.getHeight() / 10);
 		}
 		
 		String locationTitle = "Camera Location";
@@ -94,9 +106,9 @@ public class GameState extends BasicGameState
 		FontUtils.drawLeft(font, location, x, y);
 		
 		
-		if (getBoxFromMouseCoords(gc, gc.getInput().getMouseX(), gc.getInput().getMouseY()) != null)
+		if (getBoxFromMouseCoords(gc.getInput().getMouseX(), gc.getInput().getMouseY()) != null)
 		{
-			int[] coord = getBoxFromMouseCoords(gc, gc.getInput().getMouseX(), gc.getInput().getMouseY());
+			int[] coord = getBoxFromMouseCoords(gc.getInput().getMouseX(), gc.getInput().getMouseY());
 			String mLocationTitle = "Cursor Location";
 			String mLocation = coord[0] + "," + -coord[1];
 
@@ -111,6 +123,9 @@ public class GameState extends BasicGameState
 	@Override
 	public void update(GameContainer gc, StateBasedGame game, int delta)throws SlickException 
 	{
+		screenWidth = gc.getWidth();
+		screenHeight = gc.getHeight();
+		
 		int moduleWidth = gc.getWidth() / 64;
 		int moduleHeight = (gc.getHeight() - gc.getHeight() / 16 - gc.getHeight() / 8) / 64;
 		
@@ -127,20 +142,30 @@ public class GameState extends BasicGameState
 //		System.out.println();
 	}
 	
-	public int[] getBoxFromMouseCoords(GameContainer gc, int x, int y)
+	public int[] getBoxFromMouseCoords(int x, int y)
 	{
-		int moduleWidth = gc.getWidth() / 64;
-		int moduleHeight = (gc.getHeight() - gc.getHeight() / 16 - gc.getHeight() / 8) / 64;
+		int moduleWidth = screenWidth / 64;
+		int moduleHeight = (screenHeight - screenHeight / 16 - screenHeight / 8) / 64;
 		
-		if (y < (gc.getHeight() - gc.getHeight() / 16 - gc.getHeight() / 8) && y > gc.getHeight() / 16)
+		if (y < (screenHeight - screenHeight / 16 - screenHeight / 8) && y > screenHeight / 16)
 		{
 			int i = x / 64;
-			int j = (y - gc.getHeight() / 16 - gc.getHeight() / 8) / 64;
+			int j = (y - screenHeight / 16) / 64;
 			
 			return new int[]{i - moduleWidth / 2 + cameraCoords[0], j - moduleHeight / 2 + cameraCoords[1]};
 		}
 		return null;
 	}
+    
+    public void mouseClicked(int b, int x, int y, int clickCount) 
+    {
+    	if (getBoxFromMouseCoords(x, y) != null)
+    	{
+    		selectedModuleCoords = getBoxFromMouseCoords(x, y);
+    		selectedModule = world.getModuleAt(selectedModuleCoords[0], selectedModuleCoords[1]);
+ 
+    	}
+    }
 	
 	@Override
     public void keyPressed(int key, char c) 

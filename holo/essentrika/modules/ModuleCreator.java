@@ -1,12 +1,14 @@
 package holo.essentrika.modules;
 
+import org.newdawn.slick.SlickException;
+
 public class ModuleCreator 
 {
 	public static final int moduleLandID = 0;
 	public static final int modulePlayerGeneratorID = 1;
 	public static final int moduleWorldGeneratorID = 2;
 	
-	public static IModule createModule(int id)
+	public static IModule createModule(int id) throws SlickException
 	{
 		switch(id)
 		{

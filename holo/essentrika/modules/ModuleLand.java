@@ -1,12 +1,20 @@
 package holo.essentrika.modules;
 
+import holo.essentrika.map.World;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
 
 public class ModuleLand implements IModule
 {
+	Image sprite;
+	public ModuleLand() throws SlickException
+	{
+		sprite = new Image("res/Land.png");
+	}
 	
 	@Override
 	public int getID() 
@@ -15,7 +23,7 @@ public class ModuleLand implements IModule
 	}
 
 	@Override
-	public void update() 
+	public void update(World world)
 	{
 		
 	}
@@ -35,9 +43,15 @@ public class ModuleLand implements IModule
 	}
 
 	@Override
-	public Image getIcon()
+	public Image getIcon(World world, int x, int y)
 	{
-		return null;
+		return sprite;
+	}
+
+	@Override
+	public String getModuleName()
+	{
+		return "Bare Land";
 	}
 
 }
