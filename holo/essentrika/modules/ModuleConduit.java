@@ -5,42 +5,44 @@ import holo.essentrika.map.World;
 import java.util.List;
 
 import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
 
 public class ModuleConduit implements IModule
 {
-
+	Image sprite;
+	public ModuleConduit() throws SlickException
+	{
+		sprite = new Image("res/Conduit.png");
+	}
+	
 	@Override
 	public int getID()
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return ModuleCreator.moduleConduitID;
 	}
 
 	@Override
 	public void update(World world)
 	{
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public int getUpgradeCost(IModule upgrade)
 	{
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public List<Integer> getUpgrades()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Image getIcon(World world, int x, int y)
 	{
-		return null;
+		return sprite;
 	}
 
 	@Override

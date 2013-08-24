@@ -2,6 +2,7 @@ package holo.essentrika.map;
 
 import holo.essentrika.modules.IModule;
 import holo.essentrika.modules.ModuleCreator;
+import holo.essentrika.states.GameState;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -35,17 +36,24 @@ public class World
 		else
 			load();
 	}
+	
+	public void setModule(IModule module, int x, int y)
+	{
+		Long coord = hashCoord(x, y);
+		modules.put(coord, module);
+		
+	}
 
 	public IModule getModuleAt(int x, int y)
 	{
-		Long coord = (long) ((x << 24) | y + (1 << 24) / 2);
+		Long coord = hashCoord(x, y);
 		if (modules.containsKey(coord))
 		{
 			return modules.get(coord);
 		}
 		else
 		{
-			generateModuleAt((x << 24) | y + (1 << 24) / 2);
+			generateModuleAt(coord);
 			return modules.get(coord);
 		}
 	}
@@ -60,7 +68,6 @@ public class World
 			module = ModuleCreator.createModule(getRandomModuleID(x, y));
 		} catch (SlickException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		modules.put(coord, module);
@@ -89,7 +96,9 @@ public class World
 			file.createNewFile();
 
 			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(file)));
-
+			
+			out.println(GameState.money);
+			
 			for(Long coord : modules.keySet())
 			{
 				//				System.out.println(coord[0] + ":" + coord[1] + ":" + modules.get(coord).getID());
@@ -113,6 +122,8 @@ public class World
 				return;
 
 			Scanner sc = new Scanner(file);
+			if(sc.hasNext())
+				GameState.money = Integer.parseInt(sc.nextLine());
 			while(sc.hasNext())
 			{
 				String data = sc.nextLine();
@@ -128,9 +139,14 @@ public class World
 			e.printStackTrace();
 		}
 	}
+	
+	private long hashCoord(int x, int y)
+	{
+		return (long) ((x << 24) | y + (1 << 24) / 2);
+	}
 
 	// This method is a *lot* faster than using (int)Math.floor(x)
-	private static int fastfloor(double x) 
+	private int fastfloor(double x) 
 	{
 		return x > 0 ? (int) x : (int) x - 1;
 	}

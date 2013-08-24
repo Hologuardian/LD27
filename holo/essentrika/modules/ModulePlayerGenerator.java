@@ -1,13 +1,15 @@
 package holo.essentrika.modules;
 
+import holo.essentrika.grid.IGeneratorModule;
 import holo.essentrika.map.World;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
-public class ModulePlayerGenerator implements IModule
+public class ModulePlayerGenerator implements IModule, IGeneratorModule
 {
 	Image sprite;
 	public ModulePlayerGenerator() throws SlickException
@@ -30,13 +32,17 @@ public class ModulePlayerGenerator implements IModule
 	@Override
 	public int getUpgradeCost(IModule upgrade)
 	{
-		return 0;
+		int id = upgrade.getID();
+		return id == ModuleCreator.moduleLandID ? -500: id == ModuleCreator.moduleStrongPlayerGeneratorID ? 1000 : 0;
 	}
 
 	@Override
 	public List<Integer> getUpgrades()
 	{
-		return null;
+		List<Integer> modules = new ArrayList<Integer>();
+		modules.add(ModuleCreator.moduleLandID);
+		modules.add(ModuleCreator.moduleStrongPlayerGeneratorID);
+		return modules;
 	}
 
 	@Override
@@ -49,6 +55,24 @@ public class ModulePlayerGenerator implements IModule
 	public String getModuleName()
 	{
 		return "Power Generator";
+	}
+
+	@Override
+	public int powerGenerated()
+	{
+		return 10;
+	}
+
+	@Override
+	public int currentPower(World world, int x, int y)
+	{
+		return 0;
+	}
+
+	@Override
+	public ArrayList<IModule> getPoweredModules(World world, int x, int y)
+	{
+		return null;
 	}
 
 }

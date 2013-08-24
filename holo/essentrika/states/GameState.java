@@ -1,7 +1,12 @@
 package holo.essentrika.states;
 
+import holo.essentrika.grid.IGeneratorModule;
+import holo.essentrika.grid.IPowerReciever;
 import holo.essentrika.map.World;
 import holo.essentrika.modules.IModule;
+import holo.essentrika.modules.ModuleCreator;
+
+import java.util.ArrayList;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
@@ -21,8 +26,10 @@ public class GameState extends BasicGameState
 {
 	private final int stateID;
 	StateBasedGame game;
+	public static int money = 50000;
 	
 	IModule selectedModule = null;
+	ArrayList<Integer[]> selectedModuleUpgrades = new ArrayList<Integer[]>(10);
 	int[] selectedModuleCoords = new int[]{0, 0};
 	
 	GradientFill fill;
@@ -67,40 +74,101 @@ public class GameState extends BasicGameState
 				float y = gc.getHeight() / 16 + j * 64;
 				g.drawRect(x, y, 64, 64);
 				Shape box = new Rectangle(x, y, 64, 64);
-				Color col = Color.black;
 				Image sprite = world.getModuleAt(i - moduleWidth / 2 + cameraCoords[0], j - moduleHeight / 2 + cameraCoords[1]).getIcon(world, i - moduleWidth / 2 + cameraCoords[0], j - moduleHeight / 2 + cameraCoords[1]);
 				g.drawImage(sprite, x, y);
-//				switch(world.getModuleAt(i - moduleWidth / 2 + cameraCoords[0], j - moduleHeight / 2 + cameraCoords[1]).getID())
-//				{
-//				case 0:
-//					col = Color.green;
-//					break;
-//				case 1:
-//					col = Color.blue;
-//					break;
-//				case 2:
-//					col = Color.orange;
-//					break;
-//				}
-//				fill = new GradientFill(box.getX(), box.getY(), col, box.getX() + box.getWidth(), box.getY() + box.getHeight(), col);
-//				g.fill(box, fill);
 				g.draw(box);
 			}
 		}
+
+		Font font = gc.getDefaultFont();
+		
+		FontUtils.drawLeft(font, "Funds: " + money, gc.getWidth() / 8, 0);
+		
+		int x;
+		int y;
 		
 		if (selectedModule != null)
 		{
 			Image sprite = selectedModule.getIcon(world, selectedModuleCoords[0], selectedModuleCoords[1]);
-			g.drawImage(sprite, gc.getWidth() * 2 / 3, gc.getHeight() - gc.getHeight() / 10);
+			g.drawImage(sprite, gc.getWidth() / 50, gc.getHeight() - gc.getHeight() / 9);
+			
+			x = gc.getWidth() / 50 + 70;
+			y = gc.getHeight() - gc.getHeight() / 9;
+			int textY = gc.getHeight() - gc.getHeight() / 9;
+			
+			FontUtils.drawLeft(font, selectedModule.getModuleName(), x, textY);
+			
+			int textWidth = font.getWidth(selectedModule.getModuleName());
+			
+			if(selectedModule instanceof IGeneratorModule)
+			{
+				IGeneratorModule module = (IGeneratorModule)selectedModule;
+				int lineY = textY + font.getLineHeight();
+				String max = "Max Power: " + module.powerGenerated();
+				String used = "Current Output: " + module.currentPower(world, selectedModuleCoords[0], selectedModuleCoords[1]);
+				FontUtils.drawLeft(font, max, x, lineY);
+				lineY += font.getLineHeight();
+				FontUtils.drawLeft(font, used, x, lineY);
+				textWidth = Math.max(textWidth, Math.max(font.getWidth(max), font.getWidth(used)));
+			}
+			else if (selectedModule instanceof IPowerReciever)
+			{
+				IPowerReciever mod = (IPowerReciever)selectedModule;
+				int lineY = textY + font.getLineHeight();
+				String required = "Power Needed: " + mod.requiredPower();
+				String used = "Current Power: " + mod.currentPower(world, selectedModuleCoords[0], selectedModuleCoords[1]);
+				String connected = "Connected to Grid: " + mod.isConnectedToPowerGrid(world, selectedModuleCoords[0], selectedModuleCoords[1]);
+				FontUtils.drawLeft(font, required, x, lineY);
+				lineY += font.getLineHeight();
+				FontUtils.drawLeft(font, used, x, lineY);
+				lineY += font.getLineHeight();
+				FontUtils.drawLeft(font, connected, x, lineY);
+				textWidth = Math.max(textWidth, Math.max(font.getWidth(required), Math.max(font.getWidth(used), font.getWidth(connected))));
+			}
+			
+			x += 5 + textWidth;
+			g.drawLine(x, gc.getHeight() - gc.getHeight() / 8, x, gc.getHeight());
+			
+			x += 5;
+
+			selectedModuleUpgrades.clear();
+			
+			if (selectedModule.getUpgrades() != null)
+			{
+				FontUtils.drawLeft(font, "Upgrades", x, textY - font.getLineHeight());
+				x += 5 + font.getWidth("Upgrades");
+				for(Integer moduleID: selectedModule.getUpgrades())
+				{
+					IModule module = ModuleCreator.createModule(moduleID);
+					sprite = module.getIcon(world, selectedModuleCoords[0], selectedModuleCoords[1]);
+					g.drawImage(sprite, x, y);
+					selectedModuleUpgrades.add(new Integer[]{x, y, x + sprite.getWidth(), y + sprite.getHeight()});
+					x += 70;
+					FontUtils.drawLeft(font, module.getModuleName(), x, textY);
+					int lineY = textY + font.getLineHeight();
+					FontUtils.drawLeft(font, "$" + selectedModule.getUpgradeCost(module), x, lineY);
+					textWidth = Math.max(font.getWidth(module.getModuleName()), font.getWidth("$" + selectedModule.getUpgradeCost(module)));
+					
+					if(module instanceof IGeneratorModule)
+					{
+						IGeneratorModule mod = (IGeneratorModule)module;
+						lineY += font.getLineHeight();
+						String max = "Max Power: " + mod.powerGenerated();
+						FontUtils.drawLeft(font, max, x, lineY);
+						textWidth = Math.max(textWidth, font.getWidth(max));
+					}
+					
+					x += 5 + textWidth;
+				}
+			}
 		}
 		
 		String locationTitle = "Camera Location";
 		String location = cameraCoords[0] + "," + -cameraCoords[1];
 		
 		
-		Font font = gc.getDefaultFont();
-		int y = gc.getHeight() / 32 - font.getLineHeight();
-		int x = gc.getWidth() - Math.max(font.getWidth(location), font.getWidth(locationTitle));
+		y = gc.getHeight() / 32 - font.getLineHeight();
+		x = gc.getWidth() - Math.max(font.getWidth(location), font.getWidth(locationTitle));
 		FontUtils.drawLeft(font, locationTitle, x, y);
 		y = gc.getHeight() / 32;
 		FontUtils.drawLeft(font, location, x, y);
@@ -163,7 +231,36 @@ public class GameState extends BasicGameState
     	{
     		selectedModuleCoords = getBoxFromMouseCoords(x, y);
     		selectedModule = world.getModuleAt(selectedModuleCoords[0], selectedModuleCoords[1]);
- 
+    	}
+    	else
+    	{
+    		int i = 0;
+    		for(Integer[] coord : selectedModuleUpgrades)
+    		{
+    			int boxX = coord[0];
+    			int boxY = coord[1];
+    			if (x > boxX && x < boxX + 64
+    					&& y > boxY && y < boxY + 64)
+    			{
+    				int moduleID = selectedModule.getUpgrades().get(i);
+    				try
+					{
+						IModule module = ModuleCreator.createModule(moduleID);
+						int cost = selectedModule.getUpgradeCost(module);
+						if (cost <= money)
+						{
+							world.setModule(module, selectedModuleCoords[0], selectedModuleCoords[1]);
+							selectedModule = module;
+							money -= cost;
+							return;
+						}
+					} catch (SlickException e)
+					{
+						e.printStackTrace();
+					}
+    			}
+    			++i;
+    		}
     	}
     }
 	
