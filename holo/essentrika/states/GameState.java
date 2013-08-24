@@ -40,6 +40,8 @@ public class GameState extends BasicGameState
 	int screenWidth;
 	int screenHeight;
 	
+	int timer = 10000;
+	
 	
 	public GameState(int stateID, StateBasedGame game, boolean load)
 	{
@@ -83,6 +85,7 @@ public class GameState extends BasicGameState
 		Font font = gc.getDefaultFont();
 		
 		FontUtils.drawLeft(font, "Funds: " + money, gc.getWidth() / 8, 0);
+		FontUtils.drawLeft(font, "Time Until Next Update: " + timer / 1000, gc.getWidth() / 8, font.getLineHeight());
 		
 		int x;
 		int y;
@@ -195,20 +198,35 @@ public class GameState extends BasicGameState
 		screenWidth = gc.getWidth();
 		screenHeight = gc.getHeight();
 		
-		int moduleWidth = gc.getWidth() / 64;
-		int moduleHeight = (gc.getHeight() - gc.getHeight() / 16 - gc.getHeight() / 8) / 64;
-		
-		IModule[][] modules = new IModule[moduleWidth][moduleHeight];
-		
-		for(int i = 0; i < gc.getWidth() / 64; ++i)
+//		int moduleWidth = gc.getWidth() / 64;
+//		int moduleHeight = (gc.getHeight() - gc.getHeight() / 16 - gc.getHeight() / 8) / 64;
+		timer -= delta;
+		if (timer <= 0)
 		{
-			for (int j = 0; j < (gc.getHeight() - gc.getHeight() / 16 - gc.getHeight() / 8) / 64; ++j)
+			updateAllModules();
+			timer += 10000;
+		}
+		
+	}
+	
+	public void updateAllModules()
+	{
+		ArrayList<Long> keys = new ArrayList<Long>();
+		for(Long coord : world.getKeySet())
+		{
+			keys.add(coord);
+		}
+		
+		for (Long coord: keys)
+		{
+			int x = fastfloor(coord >> 24);
+			int y = fastfloor(coord - (x << 24)) - (1 << 24) / 2;
+			IModule module = world.getModuleAt(coord);
+			if(module instanceof IPowerReciever)
 			{
-				modules[i][j] = world.getModuleAt(i - moduleWidth / 2 + cameraCoords[0], j - moduleHeight / 2 + cameraCoords[1]);
-//				System.out.print(modules[i][j].getID() + " ");
+				module.update(world, x, y);
 			}
 		}
-//		System.out.println();
 	}
 	
 	public int[] getBoxFromMouseCoords(int x, int y)
@@ -283,5 +301,9 @@ public class GameState extends BasicGameState
 	{
 		return this.stateID;
 	}
-
+	
+	private int fastfloor(double x) 
+	{
+		return x > 0 ? (int) x : (int) x - 1;
+	}
 }

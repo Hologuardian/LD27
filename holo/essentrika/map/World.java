@@ -12,6 +12,7 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.newdawn.slick.SlickException;
 
@@ -43,19 +44,20 @@ public class World
 		modules.put(coord, module);
 		
 	}
+	
+	public IModule getModuleAt(Long coord)
+	{
+		if (!modules.containsKey(coord))
+			generateModuleAt(coord);
+		return modules.get(coord);
+	}
 
 	public IModule getModuleAt(int x, int y)
 	{
 		Long coord = hashCoord(x, y);
-		if (modules.containsKey(coord))
-		{
-			return modules.get(coord);
-		}
-		else
-		{
+		if (!modules.containsKey(coord))
 			generateModuleAt(coord);
-			return modules.get(coord);
-		}
+		return modules.get(coord);
 	}
 
 	public void generateModuleAt(long coord)
@@ -140,12 +142,16 @@ public class World
 		}
 	}
 	
+	public Set<Long> getKeySet()
+	{
+		return modules.keySet();
+	}
+	
 	private long hashCoord(int x, int y)
 	{
 		return (long) ((x << 24) | y + (1 << 24) / 2);
 	}
-
-	// This method is a *lot* faster than using (int)Math.floor(x)
+	
 	private int fastfloor(double x) 
 	{
 		return x > 0 ? (int) x : (int) x - 1;

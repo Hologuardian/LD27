@@ -30,9 +30,29 @@ public class ModuleLand implements IModule, IPowerReciever
 	@Override
 	public void update(World world, int x, int y)
 	{
-		if(isConnectedToPowerGrid(world, x, y))
+		if(isConnectedToPowerGrid(world, x, y) && currentPower(world, x, y) <= requiredPower())
 		{
+			IModule module = world.getModuleAt(x + 1, y);
+			IModule module1 = world.getModuleAt(x - 1, y);
+			IModule module2 = world.getModuleAt(x, y + 1);
+			IModule module3 = world.getModuleAt(x, y - 1);
 			
+			if (module instanceof IConduit)
+			{
+				((IConduit) module).getClosestValidPowerPlant(world, this, x + 1, y, this.requiredPower() - this.currentPower(world, x, y));
+			}
+			else if (module1 instanceof IConduit)
+			{
+				((IConduit) module1).getClosestValidPowerPlant(world, this, x - 1, y, this.requiredPower() - this.currentPower(world, x, y));
+			}
+			else if (module2 instanceof IConduit)
+			{
+				((IConduit) module2).getClosestValidPowerPlant(world, this, x, y + 1, this.requiredPower() - this.currentPower(world, x, y));
+			}
+			else if (module3 instanceof IConduit)
+			{
+				((IConduit) module3).getClosestValidPowerPlant(world, this, x, y - 1, this.requiredPower() - this.currentPower(world, x, y));
+			}
 		}
 	}
 
@@ -88,6 +108,12 @@ public class ModuleLand implements IModule, IPowerReciever
 	public int currentPower(World world, int x, int y)
 	{
 		return 0;
+	}
+
+	@Override
+	public IGeneratorModule getPowerSource(World world, int x, int y)
+	{
+		return null;
 	}
 
 }

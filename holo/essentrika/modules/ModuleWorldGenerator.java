@@ -1,6 +1,7 @@
 package holo.essentrika.modules;
 
 import holo.essentrika.grid.IGeneratorModule;
+import holo.essentrika.grid.IPowerReciever;
 import holo.essentrika.map.World;
 
 import java.util.ArrayList;
@@ -69,6 +70,12 @@ public class ModuleWorldGenerator implements IModule, IGeneratorModule
 	public ArrayList<IModule> getPoweredModules(World world, int x, int y)
 	{
 		return null;
+	}
+
+	@Override
+	public boolean requestPower(int request, IPowerReciever module)
+	{
+		return false;
 	}
 
 }

@@ -11,5 +11,7 @@ public interface IGeneratorModule
 	
 	public int currentPower(World world, int x, int y);
 	
+	public boolean requestPower(int request, IPowerReciever module);
+	
 	public ArrayList<IModule> getPoweredModules(World world, int x, int y);
 }

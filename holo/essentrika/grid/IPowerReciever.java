@@ -9,4 +9,6 @@ public interface IPowerReciever
 	public boolean isConnectedToPowerGrid(World world, int x, int y);
 	
 	public int currentPower(World world, int x, int y);
+	
+	public IGeneratorModule getPowerSource(World world, int x, int y);
 }
