@@ -16,6 +16,8 @@ public interface IModule
 	
 	public List<Integer> getUpgrades();
 	
+	public int getUpgradeFromKey(int key);
+	
 	public Image getIcon(World world, int x, int y);
 	
 	public String getModuleName();

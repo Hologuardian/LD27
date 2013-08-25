@@ -1,6 +1,7 @@
 package holo.essentrika.states;
 
-import holo.essentrika.grid.IGeneratorModule;
+import holo.essentrika.EssentrikaMain;
+import holo.essentrika.grid.IGenerator;
 import holo.essentrika.grid.IPowerReciever;
 import holo.essentrika.map.World;
 import holo.essentrika.modules.IModule;
@@ -15,7 +16,6 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.fills.GradientFill;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.state.BasicGameState;
@@ -26,13 +26,18 @@ public class GameState extends BasicGameState
 {
 	private final int stateID;
 	StateBasedGame game;
-	public static int money = 50000;
+	public static final int tileValue = 18;
+	public static final float differenceChange = 0.5F;
+	public static final int startingMoney = 550;
+	public static final int startingRequirement = 0;
+
+	double timer = 10000;
+	public static int requiredPoweredTiles;
+	public static int money;
 	
 	IModule selectedModule = null;
 	ArrayList<Integer[]> selectedModuleUpgrades = new ArrayList<Integer[]>(10);
 	int[] selectedModuleCoords = new int[]{0, 0};
-	
-	GradientFill fill;
 	
 	public static World world;
 	int[] cameraCoords = new int[]{0, 0};
@@ -40,7 +45,9 @@ public class GameState extends BasicGameState
 	int screenWidth;
 	int screenHeight;
 	
-	int timer = 10000;
+	
+	int poweredTiles;
+	float requiredDifference = 1.0F;
 	
 	
 	public GameState(int stateID, StateBasedGame game, boolean load)
@@ -48,7 +55,12 @@ public class GameState extends BasicGameState
 		this.stateID = stateID;
 		this.game = game;
 		GameState.world = new World(load);
-		System.out.println(load);
+		if (!load)
+		{
+			money = startingMoney;
+			requiredPoweredTiles = startingRequirement;
+		}
+		updateAllModules(true);
 	}
 
 	@Override
@@ -85,7 +97,13 @@ public class GameState extends BasicGameState
 		Font font = gc.getDefaultFont();
 		
 		FontUtils.drawLeft(font, "Funds: " + money, gc.getWidth() / 8, 0);
-		FontUtils.drawLeft(font, "Time Until Next Update: " + timer / 1000, gc.getWidth() / 8, font.getLineHeight());
+		FontUtils.drawLeft(font, "Time Until Next Update: " + (String.valueOf(timer / 1000)).substring(0, 3), gc.getWidth() / 8, font.getLineHeight());
+		
+		String req = requiredPoweredTiles + " sections need to be powered";
+		String cur = poweredTiles + " sections have been powered";
+		
+		FontUtils.drawCenter(font, req, gc.getWidth() / 2, 0, font.getWidth(req));
+		FontUtils.drawCenter(font, cur, gc.getWidth() / 2, font.getLineHeight(), font.getWidth(cur));
 		
 		int x;
 		int y;
@@ -104,12 +122,12 @@ public class GameState extends BasicGameState
 			
 			int textWidth = font.getWidth(title);
 			
-			if(selectedModule instanceof IGeneratorModule)
+			if(selectedModule instanceof IGenerator)
 			{
-				IGeneratorModule module = (IGeneratorModule)selectedModule;
+				IGenerator module = (IGenerator)selectedModule;
 				int lineY = textY + font.getLineHeight();
 				String max = "Max Power: " + module.powerGenerated();
-				String used = "Current Output: " + module.currentPower(world, selectedModuleCoords[0], selectedModuleCoords[1]);
+				String used = "Current Output: " + module.currentPower();
 				FontUtils.drawLeft(font, max, x, lineY);
 				lineY += font.getLineHeight();
 				FontUtils.drawLeft(font, used, x, lineY);
@@ -120,7 +138,7 @@ public class GameState extends BasicGameState
 				IPowerReciever mod = (IPowerReciever)selectedModule;
 				int lineY = textY + font.getLineHeight();
 				String required = "Power Needed: " + mod.requiredPower();
-				String used = "Current Power: " + mod.currentPower(world, selectedModuleCoords[0], selectedModuleCoords[1]);
+				String used = "Current Power: " + mod.currentPowerLevel();
 				String connected = "Connected to Grid: " + mod.isConnectedToPowerGrid(world, selectedModuleCoords[0], selectedModuleCoords[1]);
 				FontUtils.drawLeft(font, required, x, lineY);
 				lineY += font.getLineHeight();
@@ -153,9 +171,9 @@ public class GameState extends BasicGameState
 					FontUtils.drawLeft(font, "$" + selectedModule.getUpgradeCost(module), x, lineY);
 					textWidth = Math.max(font.getWidth(module.getModuleName()), font.getWidth("$" + selectedModule.getUpgradeCost(module)));
 					
-					if(module instanceof IGeneratorModule)
+					if(module instanceof IGenerator)
 					{
-						IGeneratorModule mod = (IGeneratorModule)module;
+						IGenerator mod = (IGenerator)module;
 						lineY += font.getLineHeight();
 						String max = "Max Power: " + mod.powerGenerated();
 						FontUtils.drawLeft(font, max, x, lineY);
@@ -198,18 +216,16 @@ public class GameState extends BasicGameState
 		screenWidth = gc.getWidth();
 		screenHeight = gc.getHeight();
 		
-//		int moduleWidth = gc.getWidth() / 64;
-//		int moduleHeight = (gc.getHeight() - gc.getHeight() / 16 - gc.getHeight() / 8) / 64;
 		timer -= delta;
 		if (timer <= 0)
 		{
-			updateAllModules();
+			updateAllModules(false);
 			timer += 10000;
 		}
 		
 	}
 	
-	public void updateAllModules()
+	public void updateAllModules(boolean first)
 	{
 		ArrayList<Long> keys = new ArrayList<Long>();
 		for(Long coord : world.getKeySet())
@@ -217,15 +233,42 @@ public class GameState extends BasicGameState
 			keys.add(coord);
 		}
 		
+		poweredTiles = 0;
+		if(!first)
+		{
+			requiredPoweredTiles += fastfloor(requiredDifference);
+			requiredDifference += differenceChange;
+		}
+		
 		for (Long coord: keys)
 		{
 			int x = fastfloor(coord >> 24);
 			int y = fastfloor(coord - (x << 24)) - (1 << 24) / 2;
-			IModule module = world.getModuleAt(coord);
-			if(module instanceof IPowerReciever)
+			if (x < 0)
 			{
-				module.update(world, x, y);
+				y = -((1 << 24) - y);
+				++x;
 			}
+			IModule module = world.getModuleAt(coord);
+			
+			module.update(world, x, y);
+			
+			if (module instanceof IPowerReciever)
+			{
+				IPowerReciever mod = (IPowerReciever)module;
+				if (mod.requiredPower() - mod.currentPowerLevel() <= 0)
+				{
+					++poweredTiles;
+				}
+			}
+		}
+		
+		if(!first)
+			money += poweredTiles * tileValue;
+		
+		if(poweredTiles < requiredPoweredTiles)
+		{
+			game.enterState(EssentrikaMain.MENUSTATEID);
 		}
 	}
 	
@@ -294,6 +337,33 @@ public class GameState extends BasicGameState
 			++cameraCoords[1];
 		else if (key == Input.KEY_UP)
 			--cameraCoords[1];
+		else if (key == Input.KEY_ESCAPE)
+		{
+			world.save();
+			game.enterState(EssentrikaMain.MENUSTATEID);
+		}
+		
+		if(selectedModule != null)
+		{
+			int id = selectedModule.getUpgradeFromKey(key);
+			if(id >= 0)
+			{
+				try
+				{
+					IModule module = ModuleCreator.createModule(id);
+					int cost = selectedModule.getUpgradeCost(module);
+					if (cost <= money)
+					{
+						world.setModule(module, selectedModuleCoords[0], selectedModuleCoords[1]);
+						selectedModule = module;
+						money -= cost;
+					}
+				} catch (SlickException e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
     }
 
 	@Override

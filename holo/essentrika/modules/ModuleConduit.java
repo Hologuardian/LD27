@@ -1,7 +1,7 @@
 package holo.essentrika.modules;
 
 import holo.essentrika.grid.IConduit;
-import holo.essentrika.grid.IGeneratorModule;
+import holo.essentrika.grid.IGenerator;
 import holo.essentrika.map.World;
 
 import java.util.List;
@@ -54,59 +54,70 @@ public class ModuleConduit implements IModule, IConduit
 	}
 
 	@Override
-	public IGeneratorModule getClosestValidPowerPlant(World world, IModule askingModule, int x, int y, int power)
+	public IGenerator getClosestValidPowerPlant(World world, IModule askingModule, int x, int y, int power, int distance)
 	{
+		if (distance >= 16)
+			return null;
 		IModule module = world.getModuleAt(x + 1, y);
 		IModule module1 = world.getModuleAt(x - 1, y);
 		IModule module2 = world.getModuleAt(x, y + 1);
 		IModule module3 = world.getModuleAt(x, y - 1);
-		if(isGridType(module)&& ((IGeneratorModule)module).powerGenerated() - ((IGeneratorModule)module).currentPower(world, x + 1, y) > power)
+		
+		IGenerator generator  = null;
+		
+		if(isGridType(module)&& ((IGenerator)module).powerGenerated() - ((IGenerator)module).currentPower() >= power)
 		{
-			return (IGeneratorModule) module;
+			generator = (IGenerator) module;
 		}
-		else if(module != askingModule && module instanceof IConduit)
+		else if(module != askingModule && module instanceof IConduit && generator == null)
 		{
-			return ((IConduit)module).getClosestValidPowerPlant(world, this, x + 1, y, power);
+			generator =  ((IConduit)module).getClosestValidPowerPlant(world, this, x + 1, y, power, ++distance);
 		}
 		
 		
-		if(isGridType(module1)&& ((IGeneratorModule)module1).powerGenerated() - ((IGeneratorModule)module1).currentPower(world, x - 1, y) > power)
+		if(isGridType(module1)&& ((IGenerator)module1).powerGenerated() - ((IGenerator)module1).currentPower() >= power)
 		{
-			return (IGeneratorModule) module1;
+			generator =  (IGenerator) module1;
 		}
-		else if(module1 != askingModule && module1 instanceof IConduit)
+		else if(module1 != askingModule && module1 instanceof IConduit && generator == null)
 		{
-			return ((IConduit)module1).getClosestValidPowerPlant(world, this, x - 1, y, power);
-		}
-		
-		
-		if(isGridType(module2)&& ((IGeneratorModule)module2).powerGenerated() - ((IGeneratorModule)module2).currentPower(world, x, y + 1) > power)
-		{
-			return (IGeneratorModule) module2;
-		}
-		else if(module1 != askingModule && module1 instanceof IConduit)
-		{
-			return ((IConduit)module1).getClosestValidPowerPlant(world, this, x, y + 1, power);
+			generator =  ((IConduit)module1).getClosestValidPowerPlant(world, this, x - 1, y, power, ++distance);
 		}
 		
 		
-		if(isGridType(module3)&& ((IGeneratorModule)module3).powerGenerated() - ((IGeneratorModule)module3).currentPower(world, x, y - 1) > power)
+		if(isGridType(module2)&& ((IGenerator)module2).powerGenerated() - ((IGenerator)module2).currentPower() >= power)
 		{
-			return (IGeneratorModule) module3;
+			generator =  (IGenerator) module2;
 		}
-		else if(module2 != askingModule && module2 instanceof IConduit)
+		else if(module2 != askingModule && module2 instanceof IConduit && generator == null)
 		{
-			return ((IConduit)module2).getClosestValidPowerPlant(world, this, x, y - 1, power);
+			generator =  ((IConduit)module2).getClosestValidPowerPlant(world, this, x, y + 1, power, ++distance);
 		}
 		
-		return null;
+		
+		if(isGridType(module3)&& ((IGenerator)module3).powerGenerated() - ((IGenerator)module3).currentPower() >= power)
+		{
+			generator =  (IGenerator) module3;
+		}
+		else if(module3 != askingModule && module3 instanceof IConduit && generator == null)
+		{
+			generator =  ((IConduit)module3).getClosestValidPowerPlant(world, this, x, y - 1, power, ++distance);
+		}
+		
+		return generator;
 	}
 	
 	public boolean isGridType(IModule mod)
 	{
-		if (mod instanceof IGeneratorModule)
+		if (mod instanceof IGenerator)
 			return true;
 		return false;
+	}
+
+	@Override
+	public int getUpgradeFromKey(int key)
+	{
+		return -1;
 	}
 
 }

@@ -20,15 +20,18 @@ public class MenuState extends BasicGameState
 	public int[] startGameCoords;
 	public int[] loadGameCoords;
 	public int[] optionsCoords;
+	public int[] quitCoords;
 	
 	public float startGameScale = 1.0F;
 	public float loadGameScale = 1.0F;
 	public float optionsScale = 1.0F;
+	public float quitScale = 1.0F;
 
 	public Image title;
 	public Image startGame;
 	public Image loadGame;
 	public Image options;
+	public Image quit;
 	
 	StateBasedGame game;
 	
@@ -45,12 +48,19 @@ public class MenuState extends BasicGameState
 		startGame = new Image("res/StartGame.png");
 		loadGame = new Image("res/LoadGame.png");
 		options = new Image("res/Options.png");
+		options = new Image("res/Quit.png");
 
 		xCoord = gc.getWidth() / 2;
-		titleCoords = new int[]{xCoord - title.getWidth() / 2, 0};
-		startGameCoords = new int[]{xCoord - startGame.getWidth() / 2, title.getHeight() * 2};
-		loadGameCoords = new int[]{xCoord - loadGame.getWidth() / 2, title.getHeight() * 2 + startGame.getHeight() * 2};
-		optionsCoords = new int[]{xCoord - options.getWidth() / 2, title.getHeight() * 2 + startGame.getHeight() * 2 + loadGame.getHeight() * 2};
+		int yCoord = 0;
+		titleCoords = new int[]{xCoord - title.getWidth() / 2, yCoord};
+		yCoord += title.getHeight() * 2;
+		startGameCoords = new int[]{xCoord - startGame.getWidth() / 2, yCoord};
+		yCoord += startGame.getHeight() * 2;
+		loadGameCoords = new int[]{xCoord - loadGame.getWidth() / 2, yCoord};
+		yCoord += loadGame.getHeight() * 2;
+		optionsCoords = new int[]{xCoord - options.getWidth() / 2, yCoord};
+		yCoord += options.getHeight() * 2;
+		quitCoords = new int[]{xCoord - options.getWidth() / 2, yCoord};
 	}
 
 	@Override
@@ -60,6 +70,7 @@ public class MenuState extends BasicGameState
 		startGame.draw(startGameCoords[0], startGameCoords[1], startGameScale);
 		loadGame.draw(loadGameCoords[0], loadGameCoords[1], loadGameScale);
 		options.draw(optionsCoords[0], optionsCoords[1], optionsScale);
+		quit.draw(quitCoords[0], quitCoords[1], quitScale);
 	}
 
 	@Override

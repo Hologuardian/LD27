@@ -5,13 +5,15 @@ import holo.essentrika.modules.IModule;
 
 import java.util.ArrayList;
 
-public interface IGeneratorModule
+public interface IGenerator
 {
 	public int powerGenerated();
 	
-	public int currentPower(World world, int x, int y);
+	public int currentPower();
 	
 	public boolean requestPower(int request, IPowerReciever module);
 	
-	public ArrayList<IModule> getPoweredModules(World world, int x, int y);
+	public ArrayList<IPowerReciever> getPoweredModules(World world, int x, int y);
+	
+	public void unregisterReciever(IPowerReciever module);
 }

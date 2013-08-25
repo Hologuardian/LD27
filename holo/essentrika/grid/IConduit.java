@@ -7,5 +7,5 @@ public interface IConduit
 {
 	public void update(World world, int x, int y);
 	
-	public IGeneratorModule getClosestValidPowerPlant(World world, IModule askingModule, int x, int y, int power);
+	public IGenerator getClosestValidPowerPlant(World world, IModule askingModule, int x, int y, int power, int distance);
 }

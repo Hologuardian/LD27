@@ -51,4 +51,10 @@ public class ModuleWater implements IModule
 		return "Water";
 	}
 
+	@Override
+	public int getUpgradeFromKey(int key)
+	{
+		return -1;
+	}
+
 }

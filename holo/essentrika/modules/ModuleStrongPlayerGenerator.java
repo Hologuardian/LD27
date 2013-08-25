@@ -1,6 +1,6 @@
 package holo.essentrika.modules;
 
-import holo.essentrika.grid.IGeneratorModule;
+import holo.essentrika.grid.IGenerator;
 import holo.essentrika.grid.IPowerReciever;
 import holo.essentrika.map.World;
 
@@ -10,9 +10,11 @@ import java.util.List;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
-public class ModuleStrongPlayerGenerator implements IModule, IGeneratorModule
+public class ModuleStrongPlayerGenerator implements IModule, IGenerator
 {
 	Image sprite;
+	public int power = 0;
+	ArrayList<IPowerReciever> powerRecievers = new ArrayList<IPowerReciever>();
 	public ModuleStrongPlayerGenerator() throws SlickException
 	{
 		sprite = new Image("res/StrongPlayerGenerator.png");
@@ -61,25 +63,43 @@ public class ModuleStrongPlayerGenerator implements IModule, IGeneratorModule
 	@Override
 	public int powerGenerated()
 	{
-		return 0;
+		return 15;
 	}
 
 	@Override
-	public int currentPower(World world, int x, int y)
+	public int currentPower()
 	{
-		return 0;
+		return power;
+	}
+
+	@Override
+	public ArrayList<IPowerReciever> getPoweredModules(World world, int x, int y)
+	{
+		return powerRecievers;
 	}
 
 	@Override
 	public boolean requestPower(int request, IPowerReciever module)
 	{
+		if (this.powerGenerated() - this.currentPower() >= request)
+		{
+			power += request;
+			return true;
+		}
 		return false;
 	}
 
 	@Override
-	public ArrayList<IModule> getPoweredModules(World world, int x, int y)
+	public void unregisterReciever(IPowerReciever module)
 	{
-		return null;
+		powerRecievers.remove(module);
+		this.power -= module.requiredPower();
+	}
+	
+	@Override
+	public int getUpgradeFromKey(int key)
+	{
+		return -1;
 	}
 
 }

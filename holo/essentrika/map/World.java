@@ -1,5 +1,6 @@
 package holo.essentrika.map;
 
+import holo.essentrika.grid.IPowerReciever;
 import holo.essentrika.modules.IModule;
 import holo.essentrika.modules.ModuleCreator;
 import holo.essentrika.states.GameState;
@@ -38,11 +39,34 @@ public class World
 			load();
 	}
 	
+	public void setModule(IModule module, Long coord)
+	{
+		int x = fastfloor(coord >> 24);
+		int y = fastfloor(coord - (x << 24)) - (1 << 24) / 2;
+		
+		if (modules.get(coord) instanceof IPowerReciever)
+		{
+			IPowerReciever mod = (IPowerReciever) modules.get(coord);
+			if (mod.getPowerSource(this, x, y) != null)
+			{
+				mod.getPowerSource(this, x, y).unregisterReciever(mod);
+			}
+		}
+		modules.put(coord, module);
+	}
+	
 	public void setModule(IModule module, int x, int y)
 	{
 		Long coord = hashCoord(x, y);
+		if (modules.get(coord) instanceof IPowerReciever)
+		{
+			IPowerReciever mod = (IPowerReciever) modules.get(coord);
+			if (mod.getPowerSource(this, x, y) != null)
+			{
+				mod.getPowerSource(this, x, y).unregisterReciever(mod);
+			}
+		}
 		modules.put(coord, module);
-		
 	}
 	
 	public IModule getModuleAt(Long coord)
@@ -100,6 +124,7 @@ public class World
 			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(file)));
 			
 			out.println(GameState.money);
+			out.println(GameState.requiredPoweredTiles);
 			
 			for(Long coord : modules.keySet())
 			{
@@ -126,6 +151,8 @@ public class World
 			Scanner sc = new Scanner(file);
 			if(sc.hasNext())
 				GameState.money = Integer.parseInt(sc.nextLine());
+			if(sc.hasNext())
+				GameState.requiredPoweredTiles = Integer.parseInt(sc.nextLine());
 			while(sc.hasNext())
 			{
 				String data = sc.nextLine();

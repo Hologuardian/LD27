@@ -25,6 +25,7 @@ public class EssentrikaMain extends StateBasedGame
             app.setDisplayMode(app.getScreenWidth() * 2 / 3, app.getScreenHeight() * 2 / 3, false);
             
             app.setVSync(true);
+            app.setUpdateOnlyWhenVisible(false);
             
             Runtime.getRuntime().addShutdownHook(new Thread() {
                 public void run() { if (GameState.world != null)GameState.world.save(); }

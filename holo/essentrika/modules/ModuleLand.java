@@ -1,7 +1,7 @@
 package holo.essentrika.modules;
 
 import holo.essentrika.grid.IConduit;
-import holo.essentrika.grid.IGeneratorModule;
+import holo.essentrika.grid.IGenerator;
 import holo.essentrika.grid.IPowerReciever;
 import holo.essentrika.map.World;
 
@@ -9,12 +9,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.newdawn.slick.Image;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
 public class ModuleLand implements IModule, IPowerReciever
 {
 	Image sprite;
 	Image poweredSprite;
+	int powerValue = 0;
+	IGenerator powerSource;
 	public ModuleLand() throws SlickException
 	{
 		sprite = new Image("res/Land.png");
@@ -30,28 +33,43 @@ public class ModuleLand implements IModule, IPowerReciever
 	@Override
 	public void update(World world, int x, int y)
 	{
-		if(isConnectedToPowerGrid(world, x, y) && currentPower(world, x, y) <= requiredPower())
+		if(isConnectedToPowerGrid(world, x, y) && currentPowerLevel() < requiredPower())
 		{
 			IModule module = world.getModuleAt(x + 1, y);
 			IModule module1 = world.getModuleAt(x - 1, y);
 			IModule module2 = world.getModuleAt(x, y + 1);
 			IModule module3 = world.getModuleAt(x, y - 1);
 			
-			if (module instanceof IConduit)
+			IGenerator power = null;
+			
+			if (module instanceof IConduit && power == null)
 			{
-				((IConduit) module).getClosestValidPowerPlant(world, this, x + 1, y, this.requiredPower() - this.currentPower(world, x, y));
+				 power = ((IConduit) module).getClosestValidPowerPlant(world, this, x + 1, y, this.requiredPower() - this.currentPowerLevel(), 0);
 			}
-			else if (module1 instanceof IConduit)
+			
+			if (module1 instanceof IConduit && power == null)
 			{
-				((IConduit) module1).getClosestValidPowerPlant(world, this, x - 1, y, this.requiredPower() - this.currentPower(world, x, y));
+				power = ((IConduit) module1).getClosestValidPowerPlant(world, this, x - 1, y, this.requiredPower() - this.currentPowerLevel(), 0);
 			}
-			else if (module2 instanceof IConduit)
+			
+			if (module2 instanceof IConduit && power == null)
 			{
-				((IConduit) module2).getClosestValidPowerPlant(world, this, x, y + 1, this.requiredPower() - this.currentPower(world, x, y));
+				power = ((IConduit) module2).getClosestValidPowerPlant(world, this, x, y + 1, this.requiredPower() - this.currentPowerLevel(), 0);
 			}
-			else if (module3 instanceof IConduit)
+			
+			if (module3 instanceof IConduit && power == null)
 			{
-				((IConduit) module3).getClosestValidPowerPlant(world, this, x, y - 1, this.requiredPower() - this.currentPower(world, x, y));
+				power = ((IConduit) module3).getClosestValidPowerPlant(world, this, x, y - 1, this.requiredPower() - this.currentPowerLevel(), 0);
+			}
+			
+			if (power != null)
+			{
+				if(power.requestPower(requiredPower(), this))
+				{
+					powerSource = power;
+					powerValue = requiredPower();
+				}
+				
 			}
 		}
 	}
@@ -76,7 +94,7 @@ public class ModuleLand implements IModule, IPowerReciever
 	@Override
 	public Image getIcon(World world, int x, int y)
 	{
-		return currentPower(world, x, y) >= requiredPower() ? poweredSprite : sprite;
+		return currentPowerLevel() >= requiredPower() ? poweredSprite : sprite;
 	}
 
 	@Override
@@ -99,21 +117,26 @@ public class ModuleLand implements IModule, IPowerReciever
 	
 	public boolean isGridType(IModule mod)
 	{
-		if (mod instanceof IGeneratorModule || mod instanceof IConduit)
+		if (mod instanceof IGenerator || mod instanceof IConduit)
 			return true;
 		return false;
 	}
 
 	@Override
-	public int currentPower(World world, int x, int y)
+	public int currentPowerLevel()
 	{
-		return 0;
+		return powerValue;
 	}
 
 	@Override
-	public IGeneratorModule getPowerSource(World world, int x, int y)
+	public IGenerator getPowerSource(World world, int x, int y)
 	{
-		return null;
+		return powerSource;
 	}
 
+	@Override
+	public int getUpgradeFromKey(int key)
+	{
+		return key == Input.KEY_G ? ModuleCreator.modulePlayerGeneratorID : key == Input.KEY_C ? ModuleCreator.moduleConduitID : -1;
+	}
 }
