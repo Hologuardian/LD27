@@ -6,12 +6,14 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
+import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 public class MenuState extends BasicGameState
 {
+	Music music;
 	private final int stateID;
 
 	public int textSize = 12;
@@ -61,11 +63,15 @@ public class MenuState extends BasicGameState
 		optionsCoords = new int[]{xCoord - options.getWidth() / 2, yCoord};
 		yCoord += options.getHeight() * 2;
 		quitCoords = new int[]{xCoord - options.getWidth() / 2, yCoord};
+		
+		music = new Music("res/sound/music.wav");
+		music.loop();
 	}
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame game, Graphics g)throws SlickException 
 	{
+		g.scale(EssentrikaMain.defaultWidth / gc.getWidth(), EssentrikaMain.defaultHeight / gc.getHeight());
 		title.draw(titleCoords[0], titleCoords[1]);
 		startGame.draw(startGameCoords[0], startGameCoords[1], startGameScale);
 		loadGame.draw(loadGameCoords[0], loadGameCoords[1], loadGameScale);
@@ -127,6 +133,7 @@ public class MenuState extends BasicGameState
 				break;
 			case 3:
 				enterOptionsMenu();
+				break;
 			case 4:
 				System.exit(0);
 				break;
@@ -154,19 +161,25 @@ public class MenuState extends BasicGameState
 	
 	public void startGame()
 	{
+		music.setPosition(0.0F);
+		music.setVolume(0.7F);
 		game.addState(new GameState(EssentrikaMain.GAMESTATEID, game, false));
 		game.enterState(EssentrikaMain.GAMESTATEID);
 	}
 	
 	public void loadGame()
 	{
+		music.setPosition(0.0F);
+		music.setVolume(0.7F);
 		game.addState(new GameState(EssentrikaMain.GAMESTATEID, game, true));
 		game.enterState(EssentrikaMain.GAMESTATEID);
 	}
 	
 	public void enterOptionsMenu()
 	{
-		
+		music.setPosition(0.0F);
+		music.setVolume(0.7F);
+		game.enterState(EssentrikaMain.TUTORIALSTATEID);
 	}
 	
 	@Override

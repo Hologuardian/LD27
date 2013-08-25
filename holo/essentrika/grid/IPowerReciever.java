@@ -6,6 +6,8 @@ public interface IPowerReciever
 {
 	public int requiredPower();
 	
+	public int getLandValue();
+	
 	public boolean isConnectedToPowerGrid(World world, int x, int y);
 	
 	public int currentPowerLevel();

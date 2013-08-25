@@ -62,7 +62,7 @@ public class ModuleWaterGenerator implements IModule, IGenerator
 	@Override
 	public int powerGenerated()
 	{
-		return 7;
+		return 8;
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package holo.essentrika.states;
 
+import holo.essentrika.EssentrikaMain;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -26,6 +28,7 @@ public class GameOverState extends BasicGameState
 	@Override
 	public void render(GameContainer gc, StateBasedGame game, Graphics g)throws SlickException 
 	{
+		g.scale(EssentrikaMain.defaultWidth / gc.getWidth(), EssentrikaMain.defaultHeight / gc.getHeight());
 		
 	}
 

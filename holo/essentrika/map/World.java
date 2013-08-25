@@ -111,7 +111,8 @@ public class World
 			file.createNewFile();
 
 			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(file)));
-			
+
+			out.println(GameState.totalTime);
 			out.println(GameState.money);
 			out.println(GameState.requiredPoweredTiles);
 			out.println(GameState.requiredDifference);
@@ -140,6 +141,8 @@ public class World
 				return;
 
 			Scanner sc = new Scanner(file);
+			if(sc.hasNext())
+				GameState.totalTime = Double.parseDouble(sc.nextLine());
 			if(sc.hasNext())
 				GameState.money = Integer.parseInt(sc.nextLine());
 			if(sc.hasNext())

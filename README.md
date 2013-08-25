@@ -1,18 +1,12 @@
 LD27
 ====
 
-My game for Ludum Dare 27
-
-Congratulations! You are the new head of a power company providing power to a local booming city. It is your job to power unbuilt tiles in order to keep up with the ever increasing demand.
+Congratulations! You are the new head of Essentrika, a start-up power company providing power to a city in construction.
+It is your job to provide a power grid that the construction crews will have to use when building the city.
+You can see your current funds in the top left of the screen and the current power requirement in the top center.
 
 Use the arrow keys to move the screen.
-
-Clicking on a tile will select it in the bottom.
-
-You can upgrade tiles for a cost, you money is in the top-left of the screen.
-
-Generators will create power, while conduits will take power from the generators and power any valid neighbouring tiles.
-
-Powering more tiles will increase your income.
-
-You will lose if you do not power enough tiles to meet the demands of the city.
+You can select a tile by clicking on it, from there you will be able to upgrade it into different modules.
+Generators create power, conduits will carry power from generators to land tiles.
+You can upgrade land tiles to use more power but provide more powered sections. (Conserve Space)
+Funding will be provided at the rate of $18 per 10 seconds for each powered tile.

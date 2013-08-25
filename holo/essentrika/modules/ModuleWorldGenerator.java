@@ -25,6 +25,12 @@ public class ModuleWorldGenerator implements IModule, IGenerator, IPowerReciever
 	}
 	
 	@Override
+	public int getLandValue()
+	{
+		return 5;
+	}
+	
+	@Override
 	public int getID()
 	{
 		return ModuleCreator.moduleWorldGeneratorID;
@@ -104,7 +110,7 @@ public class ModuleWorldGenerator implements IModule, IGenerator, IPowerReciever
 	@Override
 	public int powerGenerated()
 	{
-		return 15;
+		return 10;
 	}
 
 	@Override

@@ -29,6 +29,12 @@ public class ModuleLand implements IModule, IPowerReciever
 	{
 		return ModuleCreator.moduleLandID;
 	}
+	
+	@Override
+	public int getLandValue()
+	{
+		return 1;
+	}
 
 	@Override
 	public void update(World world, int x, int y)
@@ -78,7 +84,7 @@ public class ModuleLand implements IModule, IPowerReciever
 	public int getUpgradeCost(IModule upgrade) 
 	{
 		int id = upgrade.getID();
-		return id == ModuleCreator.modulePlayerGeneratorID ? 500 : id == ModuleCreator.moduleConduitID ? 50 : 0;
+		return id == ModuleCreator.modulePlayerGeneratorID ? 500 : id == ModuleCreator.moduleConduitID ? 25 : id == ModuleCreator.moduleImprovedLandID ? 350 : 0;
 	}
 
 	@Override
@@ -87,6 +93,7 @@ public class ModuleLand implements IModule, IPowerReciever
 		List<Integer> modules = new ArrayList<Integer>();
 		modules.add(ModuleCreator.modulePlayerGeneratorID);
 		modules.add(ModuleCreator.moduleConduitID);
+		modules.add(ModuleCreator.moduleImprovedLandID);
 		return modules;
 	}
 
@@ -136,7 +143,7 @@ public class ModuleLand implements IModule, IPowerReciever
 	@Override
 	public int getUpgradeFromKey(int key)
 	{
-		return key == Input.KEY_G ? ModuleCreator.modulePlayerGeneratorID : key == Input.KEY_C ? ModuleCreator.moduleConduitID : -1;
+		return key == Input.KEY_G ? ModuleCreator.modulePlayerGeneratorID : key == Input.KEY_C ? ModuleCreator.moduleConduitID : key == Input.KEY_L ? ModuleCreator.moduleImprovedLandID : -1;
 	}
 
 	@Override

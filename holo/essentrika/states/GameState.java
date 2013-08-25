@@ -15,6 +15,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
+import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
@@ -27,14 +28,15 @@ public class GameState extends BasicGameState
 	private final int stateID;
 	StateBasedGame game;
 	public static final int tileValue = 18;
-	public static final float differenceChange = 0.0F; //0.4
-	public static final int startingMoney = 55000; //550
+	public static final float differenceChange = 0.75F;
+	public static final int startingMoney = 55000;
 	public static final int startingRequirement = 0;
 
 	public static double timer = 10000;
 	public static int requiredPoweredTiles;
 	public static int money;
 	public static float requiredDifference = 1.0F;
+	public static double totalTime = 0;
 	
 	IModule selectedModule = null;
 	ArrayList<Integer[]> selectedModuleUpgrades = new ArrayList<Integer[]>(10);
@@ -46,6 +48,7 @@ public class GameState extends BasicGameState
 	int screenWidth;
 	int screenHeight;
 	
+	Music music;
 	
 	int poweredTiles;
 	
@@ -66,12 +69,12 @@ public class GameState extends BasicGameState
 	@Override
 	public void init(GameContainer gc, StateBasedGame game)throws SlickException 
 	{
-		
 	}
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame game, Graphics g)throws SlickException 
 	{
+		g.scale(EssentrikaMain.defaultWidth / gc.getWidth(), EssentrikaMain.defaultHeight / gc.getHeight());
 		g.setBackground(Color.black);
 		g.clear();
 		g.setColor(Color.white);
@@ -117,15 +120,15 @@ public class GameState extends BasicGameState
 			y = gc.getHeight() - gc.getHeight() / 9;
 			int textY = gc.getHeight() - gc.getHeight() / 9;
 			
-			String title = selectedModule.getModuleName() + " (" + selectedModuleCoords[0] + "," + selectedModuleCoords[1] + ")";
-			FontUtils.drawLeft(font, title, x, textY);
+			String title = selectedModule.getModuleName() + " (" + selectedModuleCoords[0] + "," + -selectedModuleCoords[1] + ")";
+			FontUtils.drawLeft(font, title, x, textY - font.getLineHeight());
 			
 			int textWidth = font.getWidth(title);
 			
+			int lineY = textY;
 			if(selectedModule instanceof IGenerator)
 			{
 				IGenerator module = (IGenerator)selectedModule;
-				int lineY = textY + font.getLineHeight();
 				String max = "Max Power: " + module.powerGenerated();
 				String used = "Current Output: " + module.currentPower();
 				FontUtils.drawLeft(font, max, x, lineY);
@@ -133,10 +136,11 @@ public class GameState extends BasicGameState
 				FontUtils.drawLeft(font, used, x, lineY);
 				textWidth = Math.max(textWidth, Math.max(font.getWidth(max), font.getWidth(used)));
 			}
-			else if (selectedModule instanceof IPowerReciever)
+			
+			if (selectedModule instanceof IPowerReciever)
 			{
 				IPowerReciever mod = (IPowerReciever)selectedModule;
-				int lineY = textY + font.getLineHeight();
+				lineY += font.getLineHeight();
 				String required = "Power Needed: " + mod.requiredPower();
 				String used = "Current Power: " + mod.currentPowerLevel();
 				String connected = "Connected to Grid: " + mod.isConnectedToPowerGrid(world, selectedModuleCoords[0], selectedModuleCoords[1]);
@@ -144,7 +148,7 @@ public class GameState extends BasicGameState
 				lineY += font.getLineHeight();
 				FontUtils.drawLeft(font, used, x, lineY);
 				lineY += font.getLineHeight();
-				FontUtils.drawLeft(font, connected, x, lineY);
+//				FontUtils.drawLeft(font, connected, x, lineY);
 				textWidth = Math.max(textWidth, Math.max(font.getWidth(required), Math.max(font.getWidth(used), font.getWidth(connected))));
 			}
 			
@@ -167,7 +171,7 @@ public class GameState extends BasicGameState
 					selectedModuleUpgrades.add(new Integer[]{x, y, x + sprite.getWidth(), y + sprite.getHeight()});
 					x += 70;
 					FontUtils.drawLeft(font, module.getModuleName(), x, textY);
-					int lineY = textY + font.getLineHeight();
+					lineY = textY + font.getLineHeight();
 					FontUtils.drawLeft(font, "$" + selectedModule.getUpgradeCost(module), x, lineY);
 					textWidth = Math.max(font.getWidth(module.getModuleName()), font.getWidth("$" + selectedModule.getUpgradeCost(module)));
 					
@@ -217,6 +221,8 @@ public class GameState extends BasicGameState
 		screenHeight = gc.getHeight();
 		
 		timer -= delta;
+		totalTime += delta;
+		
 		if (timer <= 0)
 		{
 			updateAllModules(false);
@@ -258,7 +264,7 @@ public class GameState extends BasicGameState
 				IPowerReciever mod = (IPowerReciever)module;
 				if (mod.requiredPower() - mod.currentPowerLevel() <= 0)
 				{
-					++poweredTiles;
+					poweredTiles += mod.getLandValue();
 				}
 			}
 		}
