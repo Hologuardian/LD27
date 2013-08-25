@@ -36,7 +36,7 @@ public class ModuleStrongPlayerGenerator implements IModule, IGenerator
 	public int getUpgradeCost(IModule upgrade)
 	{
 		int id = upgrade.getID();
-		return id == ModuleCreator.moduleLandID ? -1200: id == ModuleCreator.modulePlayerGeneratorID ? -800 : 0;
+		return id == ModuleCreator.moduleLandID ? -800: id == ModuleCreator.modulePlayerGeneratorID ? -400 : 0;
 	}
 
 	@Override

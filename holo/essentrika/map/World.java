@@ -27,12 +27,14 @@ public class World
 		modules = new HashMap<Long, IModule>();
 		if (!load)
 		{
-			//			
-			//			for (int i = 0; i < 1000; ++i)
-			//			{
-			//				Integer[] coords = new Integer[]{rand.nextInt(), rand.nextInt()};
-			//				modules.put(coords, ModuleCreator.createModule(rand.nextInt(2)));
-			//			}
+			try
+			{
+				setModule(ModuleCreator.createModule(ModuleCreator.modulePlayerGeneratorID), 0, 0);
+				setModule(ModuleCreator.createModule(ModuleCreator.moduleConduitID), 0, 1);
+			} catch (SlickException e)
+			{
+				e.printStackTrace();
+			}
 		}
 		else
 			load();
@@ -114,6 +116,7 @@ public class World
 
 			out.println(GameState.totalTime);
 			out.println(GameState.money);
+			out.println(GameState.totalMoney);
 			out.println(GameState.requiredPoweredTiles);
 			out.println(GameState.requiredDifference);
 			out.println(GameState.timer);
@@ -145,6 +148,8 @@ public class World
 				GameState.totalTime = Double.parseDouble(sc.nextLine());
 			if(sc.hasNext())
 				GameState.money = Integer.parseInt(sc.nextLine());
+			if(sc.hasNext())
+				GameState.totalMoney = Integer.parseInt(sc.nextLine());
 			if(sc.hasNext())
 				GameState.requiredPoweredTiles = Integer.parseInt(sc.nextLine());
 			if(sc.hasNext())

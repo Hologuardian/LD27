@@ -23,22 +23,30 @@ public class EssentrikaMain extends StateBasedGame
 	{
 		super("Essentrika");
 	}
-    
-    public static void main(String[] args) throws SlickException 
-    {
-            AppGameContainer app = new AppGameContainer(new EssentrikaMain());
-              
-            app.setDisplayMode(app.getScreenWidth() * 2 / 3, app.getScreenHeight() * 2 / 3, false);
-            
-            app.setVSync(true);
-            app.setUpdateOnlyWhenVisible(false);
-            
-            Runtime.getRuntime().addShutdownHook(new Thread() {
-                public void run() { if (GameState.world != null)GameState.world.save(); }
-            });
-            
-            app.start();
-    }
+	
+	public static void main(String[] args) throws SlickException 
+	{
+		final EssentrikaMain game = new EssentrikaMain();
+		AppGameContainer app = new AppGameContainer(game);
+
+		app.setDisplayMode(defaultWidth, defaultHeight, false);
+
+		app.setVSync(true);
+		app.setUpdateOnlyWhenVisible(false);
+
+		Runtime.getRuntime().addShutdownHook(new Thread() 
+		{
+			public void run() 
+			{ 
+				if (GameState.world != null && game.getCurrentStateID() == GAMESTATEID)
+					GameState.world.save(); 
+				if(MenuState.music != null)
+					MenuState.music.release();
+			}
+		});
+
+		app.start();
+	}
 
 	@Override
 	public void initStatesList(GameContainer gc) throws SlickException 

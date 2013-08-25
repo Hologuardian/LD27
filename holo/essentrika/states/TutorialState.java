@@ -2,12 +2,14 @@ package holo.essentrika.states;
 
 import holo.essentrika.EssentrikaMain;
 
+import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.util.FontUtils;
 
 public class TutorialState extends BasicGameState
 {
@@ -30,8 +32,8 @@ public class TutorialState extends BasicGameState
 		"You can select a tile by clicking on it, from there you will be able to upgrade it into different modules.",
 		"Generators create power, conduits will carry power from generators to land tiles.",
 		"You can upgrade land tiles to use more power but provide more powered sections. (Conserve Space)",
-		"Funding will be provided at the rate of $18 per 10 seconds for each powered tile.",
-		"&If you are for some reason "};
+		"Funding will be provided at the rate of $20 per 10 seconds for each powered tile.",
+		"&If you are for some reason you are unable to keep up with the demand the company will have to abandon the project."};
 	
 	public TutorialState(int stateID, StateBasedGame game)
 	{
@@ -47,6 +49,7 @@ public class TutorialState extends BasicGameState
 		
 		xCoord = gc.getWidth() / 2;
 		yCoord = 0;
+		tutorialCoords = new int[]{xCoord - tutorial.getWidth() / 2, yCoord};
 		titleCoords = new int[]{xCoord - title.getWidth() / 2, yCoord};
 		yCoord += title.getHeight() * 1.5; 
 	}
@@ -55,6 +58,25 @@ public class TutorialState extends BasicGameState
 	public void render(GameContainer gc, StateBasedGame game, Graphics g) throws SlickException
 	{
 		g.scale(EssentrikaMain.defaultWidth / gc.getWidth(), EssentrikaMain.defaultHeight / gc.getHeight());
+		tutorial.draw(tutorialCoords[0], tutorialCoords[1]);
+		
+		Font font = gc.getDefaultFont();
+		int y = (int) (tutorialCoords[1] + tutorial.getHeight());
+		int x = gc.getWidth() / 2;
+		
+		for(String text : line)
+		{
+			if(text.charAt(0) == '&')
+			{
+				y += font.getLineHeight();
+				text = text.substring(1);
+			}
+			FontUtils.drawCenter(font, text, x - font.getWidth(text) / 2, y, font.getWidth(text));
+			y += font.getLineHeight();
+		}
+		
+		titleCoords[1] = y;
+
 		title.draw(titleCoords[0], titleCoords[1], titleScale);
 	}
 
@@ -76,6 +98,17 @@ public class TutorialState extends BasicGameState
 			titleCoords[0] = xCoord - title.getWidth() / 2;
 		}
 	}
+	
+	@Override
+    public void mouseClicked(int b, int x, int y, int clickCount) 
+    {
+		if (x > titleCoords[0] && x < titleCoords[0] + title.getWidth()
+				&& y > titleCoords[1] && y < titleCoords[1] + title.getHeight())
+		{
+			game.addState(new GameState(EssentrikaMain.GAMESTATEID, game, false));
+			game.enterState(EssentrikaMain.GAMESTATEID);
+		}
+    }
 
 	@Override
 	public int getID()

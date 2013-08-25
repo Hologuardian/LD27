@@ -27,16 +27,17 @@ public class GameState extends BasicGameState
 {
 	private final int stateID;
 	StateBasedGame game;
-	public static final int tileValue = 18;
-	public static final float differenceChange = 0.75F;
-	public static final int startingMoney = 55000;
+	public static final int tileValue = 20;
+	public static final float differenceChange = 0.65F;
+	public static final int startingMoney = 0;
 	public static final int startingRequirement = 0;
 
 	public static double timer = 10000;
 	public static int requiredPoweredTiles;
 	public static int money;
 	public static float requiredDifference = 1.0F;
-	public static double totalTime = 0;
+	public static double totalTime;
+	public static int totalMoney;
 	
 	IModule selectedModule = null;
 	ArrayList<Integer[]> selectedModuleUpgrades = new ArrayList<Integer[]>(10);
@@ -62,6 +63,8 @@ public class GameState extends BasicGameState
 		{
 			money = startingMoney;
 			requiredPoweredTiles = startingRequirement;
+			totalTime = 0;
+			totalMoney = 0;
 		}
 		updateAllModules(true);
 	}
@@ -102,11 +105,11 @@ public class GameState extends BasicGameState
 		FontUtils.drawLeft(font, "Funds: " + money, gc.getWidth() / 8, 0);
 		FontUtils.drawLeft(font, "Time Until Next Update: " + (String.valueOf(timer / 1000)).substring(0, 3), gc.getWidth() / 8, font.getLineHeight());
 		
-		String req = requiredPoweredTiles + " sections need to be powered";
+		String req = (int)(requiredPoweredTiles + requiredDifference) + " sections must be powered";
 		String cur = poweredTiles + " sections have been powered";
 		
-		FontUtils.drawCenter(font, req, gc.getWidth() / 2, 0, font.getWidth(req));
-		FontUtils.drawCenter(font, cur, gc.getWidth() / 2, font.getLineHeight(), font.getWidth(cur));
+		FontUtils.drawCenter(font, req, gc.getWidth() / 2 - font.getWidth(req) / 2, 0, font.getWidth(req));
+		FontUtils.drawCenter(font, cur, gc.getWidth() / 2 - font.getWidth(cur) / 2, font.getLineHeight(), font.getWidth(cur));
 		
 		int x;
 		int y;
@@ -265,16 +268,19 @@ public class GameState extends BasicGameState
 				if (mod.requiredPower() - mod.currentPowerLevel() <= 0)
 				{
 					poweredTiles += mod.getLandValue();
+					
+					if(!first)
+					{
+						money += tileValue * mod.getLandValue();
+						totalMoney += tileValue * mod.getLandValue();
+					}
 				}
 			}
 		}
 		
-		if(!first)
-			money += poweredTiles * tileValue;
-		
 		if(poweredTiles < requiredPoweredTiles)
 		{
-			game.enterState(EssentrikaMain.MENUSTATEID);
+			game.enterState(EssentrikaMain.GAMEOVERSTATEID);
 		}
 	}
 	

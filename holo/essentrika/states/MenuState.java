@@ -13,7 +13,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public class MenuState extends BasicGameState
 {
-	Music music;
+	public static Music music;
 	private final int stateID;
 
 	public int textSize = 12;
@@ -62,7 +62,7 @@ public class MenuState extends BasicGameState
 		yCoord += loadGame.getHeight() * 2;
 		optionsCoords = new int[]{xCoord - options.getWidth() / 2, yCoord};
 		yCoord += options.getHeight() * 2;
-		quitCoords = new int[]{xCoord - options.getWidth() / 2, yCoord};
+		quitCoords = new int[]{xCoord - quit.getWidth() / 2, yCoord};
 		
 		music = new Music("res/sound/music.wav");
 		music.loop();
@@ -177,8 +177,6 @@ public class MenuState extends BasicGameState
 	
 	public void enterOptionsMenu()
 	{
-		music.setPosition(0.0F);
-		music.setVolume(0.7F);
 		game.enterState(EssentrikaMain.TUTORIALSTATEID);
 	}
 	
