@@ -147,6 +147,12 @@ public class ModuleLand implements IModule, IPowerReciever
 	}
 
 	@Override
+	public int getKeyFromUpgradeID(int id)
+	{
+		return id == ModuleCreator.modulePlayerGeneratorID ? Input.KEY_G : id == ModuleCreator.moduleConduitID ? Input.KEY_C : id == ModuleCreator.moduleImprovedLandID ? Input.KEY_L : -1;
+	}
+
+	@Override
 	public void removeModule(World world, int x, int y)
 	{
 		if(getPowerSource(world, x, y) != null)

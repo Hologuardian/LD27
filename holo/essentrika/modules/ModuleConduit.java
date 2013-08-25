@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.newdawn.slick.Image;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
 public class ModuleConduit implements IModule, IConduit
@@ -158,7 +159,13 @@ public class ModuleConduit implements IModule, IConduit
 	@Override
 	public int getUpgradeFromKey(int key)
 	{
-		return -1;
+		return key == Input.KEY_S ? ModuleCreator.moduleLandID : -1;
+	}
+
+	@Override
+	public int getKeyFromUpgradeID(int id)
+	{
+		return id == ModuleCreator.moduleLandID ? Input.KEY_S : -1;
 	}
 
 	@Override

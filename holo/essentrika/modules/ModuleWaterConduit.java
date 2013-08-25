@@ -7,6 +7,7 @@ import holo.essentrika.map.World;
 import java.util.List;
 
 import org.newdawn.slick.Image;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
 public class ModuleWaterConduit implements IModule, IConduit
@@ -118,6 +119,12 @@ public class ModuleWaterConduit implements IModule, IConduit
 	public int getUpgradeFromKey(int key)
 	{
 		return -1;
+	}
+
+	@Override
+	public int getKeyFromUpgradeID(int id)
+	{
+		return id == ModuleCreator.moduleLandID ? Input.KEY_S : -1;
 	}
 
 	@Override

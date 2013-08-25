@@ -32,9 +32,9 @@ public class GameOverState extends BasicGameState
 	String highScoreText;
 
 	public int[] titleCoords;
-	public int[] menuCoords;
-	
 	public Image title;
+	
+	public int[] menuCoords;
 	public Image menu;
 	
 	public float menuScale = 1.0F;
@@ -58,7 +58,7 @@ public class GameOverState extends BasicGameState
 	{
 		totalTime = GameState.totalTime;
 		totalMoney = GameState.totalMoney;
-		score = (int)((totalTime)/1000) * totalMoney;
+		score = (int)((totalTime)/1000 * totalMoney / 10);
 		scoreText = "Score: " + score;
 		
 		try

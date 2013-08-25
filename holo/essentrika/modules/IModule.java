@@ -18,6 +18,8 @@ public interface IModule
 	
 	public int getUpgradeFromKey(int key);
 	
+	public int getKeyFromUpgradeID(int id);
+	
 	public Image getIcon(World world, int x, int y);
 	
 	public String getModuleName();

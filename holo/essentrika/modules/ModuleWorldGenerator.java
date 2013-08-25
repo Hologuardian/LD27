@@ -152,6 +152,12 @@ public class ModuleWorldGenerator implements IModule, IGenerator, IPowerReciever
 	}
 
 	@Override
+	public int getKeyFromUpgradeID(int id)
+	{
+		return -1;
+	}
+
+	@Override
 	public int requiredPower()
 	{
 		return 5;

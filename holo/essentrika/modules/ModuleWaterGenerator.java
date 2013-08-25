@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.newdawn.slick.Image;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
 public class ModuleWaterGenerator implements IModule, IGenerator
@@ -100,7 +101,13 @@ public class ModuleWaterGenerator implements IModule, IGenerator
 	@Override
 	public int getUpgradeFromKey(int key)
 	{
-		return -1;
+		return key == Input.KEY_S ? ModuleCreator.moduleWaterID : -1;
+	}
+
+	@Override
+	public int getKeyFromUpgradeID(int id)
+	{
+		return id == ModuleCreator.moduleWaterID ? Input.KEY_S : -1;
 	}
 
 	@Override

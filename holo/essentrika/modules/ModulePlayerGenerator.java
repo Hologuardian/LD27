@@ -102,7 +102,13 @@ public class ModulePlayerGenerator implements IModule, IGenerator
 	@Override
 	public int getUpgradeFromKey(int key)
 	{
-		return key == Input.KEY_G ? ModuleCreator.moduleStrongPlayerGeneratorID : -1;
+		return key == Input.KEY_G ? ModuleCreator.moduleStrongPlayerGeneratorID : key == Input.KEY_S ? ModuleCreator.moduleLandID : -1;
+	}
+
+	@Override
+	public int getKeyFromUpgradeID(int id)
+	{
+		return id == ModuleCreator.moduleStrongPlayerGeneratorID ? Input.KEY_G : id == ModuleCreator.moduleLandID ? Input.KEY_S : -1;
 	}
 
 	@Override

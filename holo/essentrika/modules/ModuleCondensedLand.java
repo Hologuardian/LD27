@@ -141,7 +141,13 @@ public class ModuleCondensedLand implements IModule, IPowerReciever
 	@Override
 	public int getUpgradeFromKey(int key)
 	{
-		return key == Input.KEY_L ? ModuleCreator.modulePlayerGeneratorID : -1;
+		return key == Input.KEY_S ? ModuleCreator.moduleImprovedLandID : -1;
+	}
+
+	@Override
+	public int getKeyFromUpgradeID(int id)
+	{
+		return id == ModuleCreator.moduleImprovedLandID ? Input.KEY_S : -1;
 	}
 
 	@Override

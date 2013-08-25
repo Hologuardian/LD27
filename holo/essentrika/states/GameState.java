@@ -28,7 +28,7 @@ public class GameState extends BasicGameState
 	private final int stateID;
 	StateBasedGame game;
 	public static final int tileValue = 20;
-	public static final float differenceChange = 0.65F;
+	public static final float differenceChange = 0.7F;
 	public static final int startingMoney = 0;
 	public static final int startingRequirement = 0;
 
@@ -174,6 +174,8 @@ public class GameState extends BasicGameState
 					selectedModuleUpgrades.add(new Integer[]{x, y, x + sprite.getWidth(), y + sprite.getHeight()});
 					x += 70;
 					FontUtils.drawLeft(font, module.getModuleName(), x, textY);
+					if(selectedModule.getKeyFromUpgradeID(module.getID()) >= 0)
+						FontUtils.drawLeft(font, "(" + Input.getKeyName(selectedModule.getKeyFromUpgradeID(module.getID())) + ")", x, textY - font.getLineHeight());
 					lineY = textY + font.getLineHeight();
 					FontUtils.drawLeft(font, "$" + selectedModule.getUpgradeCost(module), x, lineY);
 					textWidth = Math.max(font.getWidth(module.getModuleName()), font.getWidth("$" + selectedModule.getUpgradeCost(module)));

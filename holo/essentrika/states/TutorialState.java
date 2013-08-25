@@ -6,6 +6,7 @@ import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
@@ -19,6 +20,11 @@ public class TutorialState extends BasicGameState
 	public int[] titleCoords;
 	public Image tutorial;
 	public int[] tutorialCoords;
+
+	public int[] menuCoords;
+	public Image menu;
+	
+	public float menuScale = 1.0F;
 	
 	public int xCoord;
 	public int yCoord;
@@ -46,11 +52,13 @@ public class TutorialState extends BasicGameState
 	{
 		tutorial = new Image("res/Options.png");
 		title = new Image("res/StartGame.png");
+		menu = new Image("res/Return.png");
 		
 		xCoord = gc.getWidth() / 2;
 		yCoord = 0;
 		tutorialCoords = new int[]{xCoord - tutorial.getWidth() / 2, yCoord};
 		titleCoords = new int[]{xCoord - title.getWidth() / 2, yCoord};
+		menuCoords = new int[]{xCoord - menu.getWidth() / 2, yCoord};
 		yCoord += title.getHeight() * 1.5; 
 	}
 
@@ -76,8 +84,10 @@ public class TutorialState extends BasicGameState
 		}
 		
 		titleCoords[1] = y;
+		menuCoords[1] = y + title.getHeight();
 
 		title.draw(titleCoords[0], titleCoords[1], titleScale);
+		menu.draw(menuCoords[0], menuCoords[1], menuScale);
 	}
 
 	@Override
@@ -85,6 +95,11 @@ public class TutorialState extends BasicGameState
 	{
 		int x = gc.getInput().getMouseX();
 		int y = gc.getInput().getMouseY();
+
+		titleScale = 1.0F;
+		menuScale = 1.0F;
+		titleCoords[0] = xCoord - title.getWidth() / 2;
+		menuCoords[0] = xCoord - menu.getWidth() / 2;
 		
 		if (x > titleCoords[0] && x < titleCoords[0] + title.getWidth()
 				&& y > titleCoords[1] && y < titleCoords[1] + title.getHeight())
@@ -92,10 +107,11 @@ public class TutorialState extends BasicGameState
 			titleScale = 1.05F;
 			titleCoords[0] = xCoord - (int)(title.getWidth() * 1.05F) / 2;
 		}
-		else
+		else if (x > menuCoords[0] && x < menuCoords[0] + menu.getWidth()
+				&& y > menuCoords[1] && y < menuCoords[1] + menu.getHeight())
 		{
-			titleScale = 1.0F;
-			titleCoords[0] = xCoord - title.getWidth() / 2;
+			menuScale = 1.05F;
+			menuCoords[0] = xCoord - (int)(menu.getWidth() * 1.05F) / 2;
 		}
 	}
 	
@@ -107,6 +123,20 @@ public class TutorialState extends BasicGameState
 		{
 			game.addState(new GameState(EssentrikaMain.GAMESTATEID, game, false));
 			game.enterState(EssentrikaMain.GAMESTATEID);
+		}
+		else if (x > menuCoords[0] && x < menuCoords[0] + menu.getWidth()
+				&& y > menuCoords[1] && y < menuCoords[1] + menu.getHeight())
+		{
+			game.enterState(EssentrikaMain.MENUSTATEID);
+		}
+    }
+	
+	@Override
+    public void keyPressed(int key, char c) 
+    {
+		if (key == Input.KEY_ESCAPE)
+		{
+			game.enterState(EssentrikaMain.MENUSTATEID);
 		}
     }
 
