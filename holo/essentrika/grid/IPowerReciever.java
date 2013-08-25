@@ -11,4 +11,6 @@ public interface IPowerReciever
 	public int currentPowerLevel();
 	
 	public IGenerator getPowerSource(World world, int x, int y);
+	
+	public void denyPower();
 }

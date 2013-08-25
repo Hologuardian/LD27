@@ -139,4 +139,18 @@ public class ModuleLand implements IModule, IPowerReciever
 	{
 		return key == Input.KEY_G ? ModuleCreator.modulePlayerGeneratorID : key == Input.KEY_C ? ModuleCreator.moduleConduitID : -1;
 	}
+
+	@Override
+	public void removeModule(World world, int x, int y)
+	{
+		if(getPowerSource(world, x, y) != null)
+			getPowerSource(world, x, y).unregisterReciever(this);
+	}
+
+	@Override
+	public void denyPower()
+	{
+		powerSource = null;
+		powerValue = 0;
+	}
 }

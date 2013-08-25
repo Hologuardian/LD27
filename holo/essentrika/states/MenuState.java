@@ -48,7 +48,7 @@ public class MenuState extends BasicGameState
 		startGame = new Image("res/StartGame.png");
 		loadGame = new Image("res/LoadGame.png");
 		options = new Image("res/Options.png");
-		options = new Image("res/Quit.png");
+		quit = new Image("res/Quit.png");
 
 		xCoord = gc.getWidth() / 2;
 		int yCoord = 0;
@@ -85,9 +85,11 @@ public class MenuState extends BasicGameState
 			startGameScale = 1.0F;
 			loadGameScale = 1.0F;
 			optionsScale = 1.0F;
+			quitScale = 1.0F;
 			startGameCoords[0] = xCoord - startGame.getWidth() / 2;
 			loadGameCoords[0] = xCoord - loadGame.getWidth() / 2;
 			optionsCoords[0] = xCoord - options.getWidth() / 2;
+			quitCoords[0] = xCoord - quit.getWidth() / 2;
 			break;
 		case 1:
 			startGameScale = 1.05F;
@@ -100,6 +102,10 @@ public class MenuState extends BasicGameState
 		case 3:
 			optionsScale = 1.05F;
 			optionsCoords[0] = xCoord - (int)(options.getWidth() * 1.05F) / 2;
+			break;
+		case 4:
+			quitScale = 1.05F;
+			quitCoords[0] = xCoord - (int)(quit.getWidth() * 1.05F) / 2;
 			break;
 		}
 	}
@@ -121,6 +127,8 @@ public class MenuState extends BasicGameState
 				break;
 			case 3:
 				enterOptionsMenu();
+			case 4:
+				System.exit(0);
 				break;
 			}
 		}
@@ -137,6 +145,9 @@ public class MenuState extends BasicGameState
 		else if (x > optionsCoords[0] && x < optionsCoords[0] + options.getWidth()
 				&& y > optionsCoords[1] && y < optionsCoords[1] + options.getHeight())
 			return 3;
+		else if (x > quitCoords[0] && x < quitCoords[0] + quit.getWidth()
+				&& y > quitCoords[1] && y < quitCoords[1] + quit.getHeight())
+			return 4;
 		else
 			return 0;
 	}

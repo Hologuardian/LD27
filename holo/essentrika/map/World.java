@@ -1,6 +1,5 @@
 package holo.essentrika.map;
 
-import holo.essentrika.grid.IPowerReciever;
 import holo.essentrika.modules.IModule;
 import holo.essentrika.modules.ModuleCreator;
 import holo.essentrika.states.GameState;
@@ -43,14 +42,9 @@ public class World
 	{
 		int x = fastfloor(coord >> 24);
 		int y = fastfloor(coord - (x << 24)) - (1 << 24) / 2;
-		
-		if (modules.get(coord) instanceof IPowerReciever)
+		if (modules.containsKey(coord))
 		{
-			IPowerReciever mod = (IPowerReciever) modules.get(coord);
-			if (mod.getPowerSource(this, x, y) != null)
-			{
-				mod.getPowerSource(this, x, y).unregisterReciever(mod);
-			}
+			modules.get(coord).removeModule(this, x, y);
 		}
 		modules.put(coord, module);
 	}
@@ -58,13 +52,9 @@ public class World
 	public void setModule(IModule module, int x, int y)
 	{
 		Long coord = hashCoord(x, y);
-		if (modules.get(coord) instanceof IPowerReciever)
+		if (modules.containsKey(coord))
 		{
-			IPowerReciever mod = (IPowerReciever) modules.get(coord);
-			if (mod.getPowerSource(this, x, y) != null)
-			{
-				mod.getPowerSource(this, x, y).unregisterReciever(mod);
-			}
+			modules.get(coord).removeModule(this, x, y);
 		}
 		modules.put(coord, module);
 	}
@@ -101,12 +91,11 @@ public class World
 
 	public int getRandomModuleID(int x, int y)
 	{
-		int id = fastfloor(Math.abs(SimplexNoise.noise(x, y) * 15));
-		if (id <= 0)
-			id = 0;
-		else if(id < 8)
+		int id = 0;
+		double weight = Math.abs(SimplexNoise.noise(x * rand.nextInt(255), y * rand.nextInt(255)) * 15);
+		if(weight < 8)
 			id = ModuleCreator.moduleLandID;
-		else if(id < 9)
+		else if(weight < 8.5)
 			id = ModuleCreator.moduleWorldGeneratorID;
 		else
 			id = ModuleCreator.moduleWaterID;

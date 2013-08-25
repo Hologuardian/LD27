@@ -83,6 +83,7 @@ public class ModuleStrongPlayerGenerator implements IModule, IGenerator
 	{
 		if (this.powerGenerated() - this.currentPower() >= request)
 		{
+			powerRecievers.add(module);
 			power += request;
 			return true;
 		}
@@ -93,6 +94,7 @@ public class ModuleStrongPlayerGenerator implements IModule, IGenerator
 	public void unregisterReciever(IPowerReciever module)
 	{
 		powerRecievers.remove(module);
+		module.denyPower();
 		this.power -= module.requiredPower();
 	}
 	
@@ -102,4 +104,19 @@ public class ModuleStrongPlayerGenerator implements IModule, IGenerator
 		return -1;
 	}
 
+	@Override
+	public void removeModule(World world, int x, int y)
+	{
+		ArrayList<IPowerReciever> recievers = new ArrayList<IPowerReciever>();
+		
+		for(IPowerReciever module: powerRecievers)
+		{
+			recievers.add(module);
+		}
+		
+		for(IPowerReciever module : recievers)
+		{
+			unregisterReciever(module);
+		}
+	}
 }

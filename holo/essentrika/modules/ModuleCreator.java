@@ -10,6 +10,7 @@ public class ModuleCreator
 	public static final int moduleStrongPlayerGeneratorID = 3;
 	public static final int moduleConduitID = 4;
 	public static final int moduleWaterID = 5;
+	public static final int moduleWaterGeneratorID = 6;
 	
 	public static IModule createModule(int id) throws SlickException
 	{
@@ -27,6 +28,8 @@ public class ModuleCreator
 			return new ModuleConduit();
 		case moduleWaterID:
 			return new ModuleWater();
+		case moduleWaterGeneratorID:
+			return new ModuleWaterGenerator();
 		}
 		
 		return null;

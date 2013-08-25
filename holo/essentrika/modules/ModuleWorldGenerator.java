@@ -33,6 +33,9 @@ public class ModuleWorldGenerator implements IModule, IGenerator, IPowerReciever
 	@Override
 	public void update(World world, int x, int y)
 	{
+		if(getPowerSource(world, x, y) == null)
+			powerValue = 0;
+		
 		if(isConnectedToPowerGrid(world, x, y) && currentPowerLevel() < requiredPower())
 		{
 			IModule module = world.getModuleAt(x + 1, y);
@@ -121,6 +124,7 @@ public class ModuleWorldGenerator implements IModule, IGenerator, IPowerReciever
 	{
 		if (this.powerGenerated() - this.currentPower() >= request)
 		{
+			powerRecievers.add(module);
 			power += request;
 			return true;
 		}
@@ -131,6 +135,7 @@ public class ModuleWorldGenerator implements IModule, IGenerator, IPowerReciever
 	public void unregisterReciever(IPowerReciever module)
 	{
 		powerRecievers.remove(module);
+		module.denyPower();
 		this.power -= module.requiredPower();
 	}
 
@@ -171,4 +176,30 @@ public class ModuleWorldGenerator implements IModule, IGenerator, IPowerReciever
 		return powerSource;
 	}
 
+	@Override
+	public void removeModule(World world, int x, int y)
+	{
+		if(getPowerSource(world, x, y) != null)
+			getPowerSource(world, x, y).unregisterReciever(this);
+		
+
+		ArrayList<IPowerReciever> recievers = new ArrayList<IPowerReciever>();
+		
+		for(IPowerReciever module: powerRecievers)
+		{
+			recievers.add(module);
+		}
+		
+		for(IPowerReciever module : recievers)
+		{
+			unregisterReciever(module);
+		}
+	}
+
+	@Override
+	public void denyPower()
+	{
+		powerSource = null;
+		powerValue = 0;
+	}
 }

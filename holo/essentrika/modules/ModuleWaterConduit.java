@@ -9,12 +9,12 @@ import java.util.List;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
-public class ModuleConduit implements IModule, IConduit
+public class ModuleWaterConduit implements IModule, IConduit
 {
 	Image sprite;
-	public ModuleConduit() throws SlickException
+	public ModuleWaterConduit() throws SlickException
 	{
-		sprite = new Image("res/Conduit.png");
+		sprite = new Image("res/WaterConduit.png");
 	}
 	
 	@Override

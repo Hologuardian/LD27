@@ -8,17 +8,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
-public class ModulePlayerGenerator implements IModule, IGenerator
+public class ModuleWaterGenerator implements IModule, IGenerator
 {
 	Image sprite;
 	int power = 0;
 	ArrayList<IPowerReciever> powerRecievers = new ArrayList<IPowerReciever>();
-	public ModulePlayerGenerator() throws SlickException
+	public ModuleWaterGenerator() throws SlickException
 	{
-		sprite = new Image("res/PlayerGenerator.png");
+		sprite = new Image("res/WaterGenerator.png");
 	}
 
 	@Override
@@ -37,15 +36,14 @@ public class ModulePlayerGenerator implements IModule, IGenerator
 	public int getUpgradeCost(IModule upgrade)
 	{
 		int id = upgrade.getID();
-		return id == ModuleCreator.moduleLandID ? -400: id == ModuleCreator.moduleStrongPlayerGeneratorID ? 1000 : 0;
+		return id == ModuleCreator.moduleWaterID ? -280 : 0;
 	}
 
 	@Override
 	public List<Integer> getUpgrades()
 	{
 		List<Integer> modules = new ArrayList<Integer>();
-		modules.add(ModuleCreator.moduleLandID);
-		modules.add(ModuleCreator.moduleStrongPlayerGeneratorID);
+		modules.add(ModuleCreator.moduleWaterID);
 		return modules;
 	}
 
@@ -58,13 +56,13 @@ public class ModulePlayerGenerator implements IModule, IGenerator
 	@Override
 	public String getModuleName()
 	{
-		return "Power Generator";
+		return "Water Generator";
 	}
 
 	@Override
 	public int powerGenerated()
 	{
-		return 10;
+		return 7;
 	}
 
 	@Override
@@ -102,7 +100,7 @@ public class ModulePlayerGenerator implements IModule, IGenerator
 	@Override
 	public int getUpgradeFromKey(int key)
 	{
-		return key == Input.KEY_G ? ModuleCreator.moduleStrongPlayerGeneratorID : -1;
+		return -1;
 	}
 
 	@Override

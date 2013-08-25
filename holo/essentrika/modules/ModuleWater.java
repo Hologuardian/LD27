@@ -56,5 +56,10 @@ public class ModuleWater implements IModule
 	{
 		return -1;
 	}
-
+	
+	@Override
+	public void removeModule(World world, int x, int y)
+	{
+		
+	}
 }

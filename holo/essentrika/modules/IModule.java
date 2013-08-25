@@ -21,4 +21,6 @@ public interface IModule
 	public Image getIcon(World world, int x, int y);
 	
 	public String getModuleName();
+	
+	public void removeModule(World world, int x, int y);
 }
