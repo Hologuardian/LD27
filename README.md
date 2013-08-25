@@ -11,6 +11,8 @@ Clicking on a tile will select it in the bottom.
 
 You can upgrade tiles for a cost, you money is in the top-left of the screen.
 
+Generators will create power, while conduits will take power from the generators and power any valid neighbouring tiles.
+
 Powering more tiles will increase your income.
 
 You will lose if you do not power enough tiles to meet the demands of the city.

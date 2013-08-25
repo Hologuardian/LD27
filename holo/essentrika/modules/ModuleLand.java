@@ -78,7 +78,7 @@ public class ModuleLand implements IModule, IPowerReciever
 	public int getUpgradeCost(IModule upgrade) 
 	{
 		int id = upgrade.getID();
-		return id == ModuleCreator.modulePlayerGeneratorID ? 500 : id == ModuleCreator.moduleWorldGeneratorID ? 1500: id == ModuleCreator.moduleConduitID ? 50 : 0;
+		return id == ModuleCreator.modulePlayerGeneratorID ? 500 : id == ModuleCreator.moduleConduitID ? 50 : 0;
 	}
 
 	@Override
@@ -86,7 +86,6 @@ public class ModuleLand implements IModule, IPowerReciever
 	{
 		List<Integer> modules = new ArrayList<Integer>();
 		modules.add(ModuleCreator.modulePlayerGeneratorID);
-		modules.add(ModuleCreator.moduleWorldGeneratorID);
 		modules.add(ModuleCreator.moduleConduitID);
 		return modules;
 	}

@@ -27,13 +27,14 @@ public class GameState extends BasicGameState
 	private final int stateID;
 	StateBasedGame game;
 	public static final int tileValue = 18;
-	public static final float differenceChange = 0.0F;
-	public static final int startingMoney = 55000;
+	public static final float differenceChange = 0.4F;
+	public static final int startingMoney = 550;
 	public static final int startingRequirement = 0;
 
-	double timer = 10000;
+	public static double timer = 10000;
 	public static int requiredPoweredTiles;
 	public static int money;
+	public static float requiredDifference = 1.0F;
 	
 	IModule selectedModule = null;
 	ArrayList<Integer[]> selectedModuleUpgrades = new ArrayList<Integer[]>(10);
@@ -47,7 +48,6 @@ public class GameState extends BasicGameState
 	
 	
 	int poweredTiles;
-	float requiredDifference = 1.0F;
 	
 	
 	public GameState(int stateID, StateBasedGame game, boolean load)

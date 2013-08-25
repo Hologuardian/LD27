@@ -114,6 +114,8 @@ public class World
 			
 			out.println(GameState.money);
 			out.println(GameState.requiredPoweredTiles);
+			out.println(GameState.requiredDifference);
+			out.println(GameState.timer);
 			
 			for(Long coord : modules.keySet())
 			{
@@ -142,6 +144,10 @@ public class World
 				GameState.money = Integer.parseInt(sc.nextLine());
 			if(sc.hasNext())
 				GameState.requiredPoweredTiles = Integer.parseInt(sc.nextLine());
+			if(sc.hasNext())
+				GameState.requiredDifference = Float.parseFloat(sc.nextLine());
+			if(sc.hasNext())
+				GameState.timer = Double.parseDouble(sc.nextLine());
 			while(sc.hasNext())
 			{
 				String data = sc.nextLine();
