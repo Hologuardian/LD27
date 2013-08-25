@@ -27,8 +27,8 @@ public class GameState extends BasicGameState
 	private final int stateID;
 	StateBasedGame game;
 	public static final int tileValue = 18;
-	public static final float differenceChange = 0.4F;
-	public static final int startingMoney = 550;
+	public static final float differenceChange = 0.0F; //0.4
+	public static final int startingMoney = 55000; //550
 	public static final int startingRequirement = 0;
 
 	public static double timer = 10000;
