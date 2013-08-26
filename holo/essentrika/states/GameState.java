@@ -35,7 +35,7 @@ public class GameState extends BasicGameState
 	public static double timer = 10000;
 	public static int requiredPoweredTiles;
 	public static int money;
-	public static float requiredDifference = 1.0F;
+	public static float requiredDifference;
 	public static double totalTime;
 	public static int totalMoney;
 	
@@ -62,6 +62,7 @@ public class GameState extends BasicGameState
 		if (!load)
 		{
 			money = startingMoney;
+			requiredDifference = 1.0F;
 			requiredPoweredTiles = startingRequirement;
 			totalTime = 0;
 			totalMoney = 0;
