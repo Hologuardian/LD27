@@ -35,7 +35,7 @@ public class ModuleWater implements IModule
 	public int getUpgradeCost(IModule upgrade) 
 	{
 		int id = upgrade.getID();
-		return id == ModuleCreator.moduleWaterGeneratorID ? 350 : 0;
+		return id == ModuleCreator.moduleWaterGeneratorID ? 350 : 350;
 	}
 
 	@Override
